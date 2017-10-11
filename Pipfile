@@ -1,0 +1,17 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+
+flask = "*"
+pynacl = "*"
+"flask-sqlalchemy" = "*"
+"flask-migrate" = "*"
+
+
+[dev-packages]
+
+pytest = "*"
+tox = "*"

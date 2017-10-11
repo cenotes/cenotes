@@ -1,0 +1,3 @@
+class InvalidKeyORNoteError(Exception):
+    pass
+
