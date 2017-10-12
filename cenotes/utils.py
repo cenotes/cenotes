@@ -1,6 +1,7 @@
 import base64
 import nacl.secret
-from cenotes import server_box, errors
+from flask import current_app
+from cenotes import errors
 
 
 def craft_secret_box(key):
@@ -19,11 +20,11 @@ def url_safe_sym_decrypt(what, secret_box):
 
 
 def server_key_sym_encrypt(what):
-    return url_safe_sym_encrypt(what, server_box)
+    return url_safe_sym_encrypt(what, current_app.server_box)
 
 
 def server_key_sym_decrypt(what):
-    return url_safe_sym_decrypt(what, server_box)
+    return url_safe_sym_decrypt(what, current_app.server_box)
 
 
 def user_key_sym_encrypt(what, key):

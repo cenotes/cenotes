@@ -1,29 +1,21 @@
 import os
-from flask import Flask, jsonify
-from flask_sqlalchemy import SQLAlchemy
+from flask import Flask
 from flask_migrate import Migrate
 import nacl.secret
+from cenotes.models import db
 from cenotes import controllers, errors
 
-
-app = Flask(__name__)
-app.config.from_object(os.environ['APP_SETTINGS'])
-db = SQLAlchemy(app)
-migrate = Migrate(app, db)
-server_box = nacl.secret.SecretBox(app.config["SERVER_ENCRYPTION_KEY"])
-
-from cenotes.models import Note
+migrate = Migrate()
 
 
-app.register_blueprint(controllers.notes_bp)
+def create_app(app_settings=None):
+    app = Flask(__name__)
+    app.config.from_object(app_settings or os.environ['APP_SETTINGS'])
+    db.init_app(app)
+    migrate.init_app(app, db)
 
+    app.server_box = nacl.secret.SecretBox(app.config["SERVER_ENCRYPTION_KEY"])
 
-@app.errorhandler(404)
-def not_found(error):
-    return jsonify(error=404, text="Not found"), 404
-
-
-@app.errorhandler(errors.InvalidKeyORNoteError)
-def invalid_key_or_note(error):
-    return jsonify(error=400, text="Invalid key or note not found"), 400
-
+    app.register_blueprint(controllers.notes_bp)
+    app.register_blueprint(errors.error_bp)
+    return app

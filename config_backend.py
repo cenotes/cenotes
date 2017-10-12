@@ -1,10 +1,9 @@
 import os
-import base64
 import nacl.utils
 
 
-def generate_random_chars():
-    return base64.b64encode(nacl.utils.random()).decode()
+def generate_random_chars(size=32):
+    return nacl.utils.random(size)
 
 
 class Config(object):

@@ -1,4 +1,6 @@
-from cenotes import db
+from flask_sqlalchemy import SQLAlchemy
+
+db = SQLAlchemy()
 
 
 class Note(db.Model):

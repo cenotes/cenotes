@@ -9,9 +9,11 @@ flask = "*"
 pynacl = "*"
 "flask-sqlalchemy" = "*"
 "flask-migrate" = "*"
+"flask-script" = "*"
 
 
 [dev-packages]
 
 pytest = "*"
 tox = "*"
+"pytest-flask" = "*"
