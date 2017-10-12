@@ -31,6 +31,8 @@ class Config(object):
 
     # Secret key for signing cookies
     SECRET_KEY = os.getenv("SECRET_KEY", generate_random_chars())
+    SERVER_ENCRYPTION_KEY = os.getenv(
+        "SERVER_ENCRYPTION_KEY", generate_random_chars())
 
 
 class Production(Config):
@@ -44,3 +46,4 @@ class Development(Config):
 
 class Testing(Config):
     TESTING = True
+    SERVER_ENCRYPTION_KEY = "TESTING_KEY"
