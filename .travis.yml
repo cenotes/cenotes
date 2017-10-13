@@ -1,7 +1,8 @@
 env:
-  - TOXENV=py-sqlite
-  - TOXENV=py-mysql TEST_DB_USER:travis
-  - TOXENV=py-postgres TEST_DB_USER:travis TEST_DB_PORT:5432
+  matrix:
+    - DB=mysql TOXENV=py-mysql TEST_DB_USER=travis
+    - DB=postgresql TOXENV=py-postgres TEST_DB_USER=travis TEST_DB_PORT=5432
+    - DB=sqlite TOXENV=py-sqlite
 install:
   - pip install -U tox
 language:
@@ -17,5 +18,6 @@ services:
   - mysql
   - postgresql
 before_script:
-  - mysql -e 'CREATE DATABASE IF NOT EXISTS test_tox_db;'
-  - psql -c 'create database test_tox_db;' -U postgres
+  - sh -c "if [ '$DB' = 'mysql' ]; then mysql -e 'CREATE DATABASE IF NOT EXISTS test_tox_db;'; fi"
+  - sh -c "if [ '$DB' = 'postgresql' ]; then psql -c 'DROP DATABASE IF EXISTS test_tox_db;' -U postgres; fi"
+  - sh -c "if [ '$DB' = 'postgresql' ]; then psql -c 'CREATE DATABASE test_tox_db;' -U postgres; fi"
