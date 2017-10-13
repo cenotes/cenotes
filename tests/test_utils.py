@@ -28,9 +28,9 @@ def test_enforce_bytes():
 
     results = utils.enforce_bytes(
         dummy_func, nof_kwargs=1)("test1", y="test2", z="test3")
-    assert isinstance(results[0], bytes)
-    assert isinstance(results[1], bytes)
-    assert not isinstance(results[2], bytes)
+    assert(isinstance(results[0], bytes), type(results[0]))
+    assert(isinstance(results[1], bytes), type(results[1]))
+    assert(not isinstance(results[2], bytes), type(results[2]))
 
 
 def test_url_safe_sym_encrypt(testing_box):
