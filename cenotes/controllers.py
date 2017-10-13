@@ -32,4 +32,3 @@ def encrypt_note(key, note=None):
     if not note:
         note = request.get_json(silent=True)
     pass
-
