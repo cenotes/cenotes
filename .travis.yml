@@ -13,7 +13,7 @@ python:
   - 3.5
   - 3.6
 script:
-  - tox -e ${TOXENV}
+  - tox -e ${TOXENV} flake8
 services:
   - mysql
   - postgresql
