@@ -1,4 +1,5 @@
 import os
+import sys
 from flask import Flask
 from flask_migrate import Migrate
 import nacl.secret
@@ -6,6 +7,9 @@ from cenotes.models import db
 from cenotes import controllers, errors, utils
 
 migrate = Migrate()
+
+if sys.version_info[0] < 3:
+    raise RuntimeError("Must be using Python 3!")
 
 
 def create_app(app_settings=None):
