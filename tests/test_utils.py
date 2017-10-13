@@ -25,12 +25,32 @@ def test_encrypt_decrypt():
 def test_enforce_bytes():
     def dummy_func(x, y, z):
         return x, y, z
-
     results = utils.enforce_bytes(
-        dummy_func, nof_kwargs=1)("test1", y="test2", z="test3")
+        kwargs_names=["y"])(dummy_func)("test1", y="test2", z="test3")
     assert isinstance(results[0], bytes), type(results[0])
     assert isinstance(results[1], bytes), type(results[1])
     assert not isinstance(results[2], bytes), type(results[2])
+
+
+def test_enforce_bytes_wrong_kwarg():
+    def dummy_func(x, y, z):
+        return x, y, z
+    with pytest.raises(SyntaxWarning):
+        utils.enforce_bytes(
+            kwargs_names=["N"])(dummy_func)("test1", y="test2", z="test3")
+
+
+def test_maketype():
+    assert type(utils.make_type(tuple, "lala")) == tuple
+    assert type(utils.make_type(set, "lala")) == set
+    assert type(utils.make_type(list, "lala")) == list
+
+
+def test_maketuple():
+    assert utils.make_tuple("lala") == ("lala",)
+    assert utils.make_tuple(["lala"]) == ("lala",)
+    assert utils.make_tuple(("lala",)) == ("lala",)
+    assert utils.make_tuple({"lala"}) == ("lala",)
 
 
 def test_url_safe_sym_encrypt(testing_box):
