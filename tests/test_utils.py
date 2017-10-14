@@ -91,6 +91,12 @@ def test_user_encrypt_decrypt():
             plaintext, "user-key!"), "user-key!") == plaintext)
 
 
+def test_generate_random_chars():
+    random_chars = utils.generate_random_chars(15)
+    assert isinstance(random_chars, bytes)
+    assert len(random_chars) == 15
+
+
 def test_craft_json_response_error_aka_no_success():
     assert (json.loads(utils.craft_json_response(error="Oh noes"))["success"]
             is False)

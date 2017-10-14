@@ -10,6 +10,10 @@ ops = pwhash.SCRYPT_OPSLIMIT_SENSITIVE
 mem = pwhash.SCRYPT_MEMLIMIT_SENSITIVE
 
 
+def generate_random_chars(size=32):
+    return nacl_utils.random(size)
+
+
 def make_type(mtype, *args):
     t_args = []
     accepted_collections = (list, tuple, set)
