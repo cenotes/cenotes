@@ -1,7 +1,7 @@
 import pytest
 import json
 import nacl.secret
-from cenotes import utils, errors, models
+from cenotes import utils, exceptions, models
 
 
 def test_craft_key():
@@ -68,7 +68,7 @@ def test_url_safe_sym_decrypt(testing_box):
 def test_url_safe_sym_decrypt_wrong_password(testing_box):
     plaintext = "can you see me?"
     ciphertext = utils.url_safe_sym_encrypt(plaintext, testing_box)
-    with pytest.raises(errors.InvalidKeyORNoteError):
+    with pytest.raises(exceptions.InvalidKeyORNoteError):
         utils.url_safe_sym_decrypt(ciphertext, utils.craft_secret_box(
             utils.craft_key_from_password("mallory")))
 

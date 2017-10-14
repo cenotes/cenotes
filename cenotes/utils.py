@@ -2,7 +2,7 @@ import base64
 import json
 from nacl import pwhash, secret, utils as nacl_utils, exceptions
 from flask import current_app
-from cenotes import errors
+import cenotes.exceptions
 
 kdf = pwhash.kdf_scryptsalsa208sha256
 salt = nacl_utils.random(pwhash.SCRYPT_SALTBYTES)
@@ -76,7 +76,7 @@ def url_safe_sym_decrypt(what, secret_box):
     try:
         return secret_box.decrypt(base64.urlsafe_b64decode(what)).decode()
     except exceptions.CryptoError as err:
-        raise errors.InvalidKeyORNoteError(err)
+        raise cenotes.exceptions.InvalidKeyORNoteError(err)
 
 
 @enforce_bytes(kwargs_names="what")
