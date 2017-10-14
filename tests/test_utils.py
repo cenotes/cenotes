@@ -1,6 +1,7 @@
 import pytest
+import json
 import nacl.secret
-from cenotes import utils, errors
+from cenotes import utils, errors, models
 
 
 def test_craft_key():
@@ -88,3 +89,32 @@ def test_user_encrypt_decrypt():
     assert (utils.user_key_sym_decrypt(
         utils.user_key_sym_encrypt(
             plaintext, "user-key!"), "user-key!") == plaintext)
+
+
+def test_craft_json_response_error_aka_no_success():
+    assert (json.loads(utils.craft_json_response(error="Oh noes"))["success"]
+            is False)
+
+
+def test_craft_json_response_default_success():
+    assert json.loads(utils.craft_json_response())["success"] is True
+
+
+def test_craft_json_response_multiple_notes(app):
+    note1 = models.Note("test1")
+    note2 = models.Note("test2")
+    models.db.session.add(note1, note2)
+    models.db.session.commit()
+    response = json.loads(utils.craft_json_response(enotes=[note1, note2]))
+    assert (set(map(utils.server_key_sym_decrypt,
+                    map(lambda x: x["enote_id"], response["enotes"])))
+            == set(map(str, [note1.id, note2.id])))
+    for attribute, model_attr in (
+            ("enote_expiration_date", "iso_expiration_date"),
+            ("enote_visits_count", "visits_count"),
+            ("enote_max_visits", "max_visits")):
+        assert (set(map(lambda x: x[attribute], response["enotes"]))
+                == set(map(lambda x: getattr(x, model_attr), [note1, note2])))
+
+    assert (tuple(map(lambda x: x["enote_key"], response["enotes"]))
+            == tuple(["", ""]))

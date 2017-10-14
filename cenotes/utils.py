@@ -1,4 +1,5 @@
 import base64
+import json
 from nacl import pwhash, secret, utils as nacl_utils, exceptions
 from flask import current_app
 from cenotes import errors
@@ -94,3 +95,20 @@ def user_key_sym_encrypt(what, password):
 def user_key_sym_decrypt(what, password):
     return url_safe_sym_decrypt(
         what, craft_secret_box(craft_key_from_password(password)))
+
+
+def craft_json_response(success=True, enotes=tuple(), **kwargs):
+    return json.dumps(
+        dict(success=success if not kwargs.get("error") else False,
+             error=kwargs.get("error", ""),
+             enotes=[
+                 {"enote_id": server_key_sym_encrypt(
+                     str(getattr(enote, "id", ""))),
+                  "enote_key": kwargs.get("enote_key", ""),
+                  "enote_expiration_date": getattr(
+                      enote, "iso_expiration_date", ""),
+                  "enote_visits_count": getattr(enote, "visits_count", ""),
+                  "enote_max_visits": getattr(enote, "max_visits", "")}
+                 for enote in enotes]
+             )
+    )
