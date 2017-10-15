@@ -88,7 +88,7 @@ def test_user_encrypt_decrypt():
     plaintext = "can you see me?"
     assert (utils.user_key_sym_decrypt(
         utils.user_key_sym_encrypt(
-            plaintext, "user-key!"), "user-key!") == plaintext)
+            plaintext, "user-key!"), "user-key!").decode() == plaintext)
 
 
 def test_generate_random_chars():

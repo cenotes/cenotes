@@ -98,14 +98,13 @@ def server_key_sym_decrypt(what):
 
 @enforce_bytes(kwargs_names="what")
 def user_key_sym_encrypt(what, password):
-    return url_safe_sym_encrypt(
-        what, craft_secret_box(craft_key_from_password(password)))
+    return craft_secret_box(craft_key_from_password(password)).encrypt(what)
 
 
 @enforce_bytes(kwargs_names="what")
 def user_key_sym_decrypt(what, password):
-    return url_safe_sym_decrypt(
-        what, craft_secret_box(craft_key_from_password(password)))
+    return craft_secret_box(
+        craft_key_from_password(password)).decrypt(what)
 
 
 def craft_json_response(success=True, enotes=tuple(), **kwargs):
