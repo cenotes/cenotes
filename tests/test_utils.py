@@ -124,3 +124,23 @@ def test_craft_json_response_multiple_notes(app):
 
     assert (tuple(map(lambda x: x["enote_key"], response["enotes"]))
             == tuple(["", ""]))
+
+
+def test_get_request_params():
+    params = utils.get_request_params(
+        dict(note_id="2", note_id_key="id-key", note_key="note-key",
+             note="encrypt me", expiration_date="never",
+             visits_count="maximum", max_visits="zero", other_option="what?"))
+    assert set(params._fields) == {"note_id", "note_id_key", "note_key",
+                                   "note", "no_store", "expiration_date",
+                                   "visits_count", "max_visits"}
+    assert params.note_id == "2"
+    assert params.note_id_key == "id-key"
+    assert params.note_key == "note-key"
+    assert params.note == "encrypt me"
+    assert params.expiration_date == "never"
+    assert params.visits_count == "maximum"
+    assert params.max_visits == "zero"
+    assert params.no_store is None
+
+

@@ -1,5 +1,6 @@
 import base64
 import json
+from collections import namedtuple
 from nacl import pwhash, secret, utils as nacl_utils, exceptions
 from flask import current_app
 import cenotes.exceptions
@@ -8,6 +9,12 @@ kdf = pwhash.kdf_scryptsalsa208sha256
 salt = nacl_utils.random(pwhash.SCRYPT_SALTBYTES)
 ops = pwhash.SCRYPT_OPSLIMIT_SENSITIVE
 mem = pwhash.SCRYPT_MEMLIMIT_SENSITIVE
+
+
+cen_params = namedtuple('cen_params',
+                        ['note_id', 'note_id_key', 'note_key', 'note',
+                         'expiration_date', 'visits_count', 'max_visits',
+                         'no_store'])
 
 
 def generate_random_chars(size=32):
@@ -116,3 +123,8 @@ def craft_json_response(success=True, enotes=tuple(), **kwargs):
                  for enote in enotes]
              )
     )
+
+
+def get_request_params(request_params):
+    return cen_params(**{
+        key: request_params.get(key) for key in cen_params._fields})
