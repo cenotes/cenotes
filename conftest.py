@@ -9,7 +9,7 @@ def _app():
     return create_app(app_settings=Testing)
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def db(app):
     _db.drop_all()
     _db.app = app
