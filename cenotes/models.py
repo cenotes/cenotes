@@ -26,4 +26,5 @@ class Note(db.Model):
 
     @property
     def iso_expiration_date(self):
-        return self.expiration_date.isoformat()
+        return (self.expiration_date.isoformat()
+                if self.expiration_date else None)
