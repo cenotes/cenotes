@@ -1,3 +1,4 @@
+import traceback
 from flask import current_app
 
 
@@ -12,7 +13,8 @@ class CenotesError(Exception):
     def __str__(self, *args, **kwargs):
         if self.should_traceback():
             return "{0}: {1}".format(
-                self.base_text, str(super(Exception, self)))
+                self.base_text,
+                traceback.extract_tb(super(Exception, self).__traceback__))
         else:
             return self.base_text
 
@@ -21,7 +23,7 @@ class InvalidUsage(CenotesError):
     base_text = "Invalid usage"
 
     def __init__(self, *args, **kwargs):
-        self.base_text = args or kwargs
+        self.base_text = ",".join(args or kwargs.values())
 
 
 class InvalidKeyORNoteError(CenotesError):
