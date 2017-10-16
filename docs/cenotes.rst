@@ -1,6 +1,13 @@
 cenotes package
 ===============
 
+Subpackages
+-----------
+
+.. toctree::
+
+    cenotes.utils
+
 Submodules
 ----------
 
@@ -20,18 +27,18 @@ cenotes\.errors module
     :undoc-members:
     :show-inheritance:
 
-cenotes\.models module
-----------------------
+cenotes\.exceptions module
+--------------------------
 
-.. automodule:: cenotes.models
+.. automodule:: cenotes.exceptions
     :members:
     :undoc-members:
     :show-inheritance:
 
-cenotes\.utils module
----------------------
+cenotes\.models module
+----------------------
 
-.. automodule:: cenotes.utils
+.. automodule:: cenotes.models
     :members:
     :undoc-members:
     :show-inheritance:
