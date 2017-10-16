@@ -3,4 +3,4 @@ def test_404(client):
     assert response.status_code == 404
     assert response.json["success"] is False
     assert response.json["error"] != ""
-    assert response.json["enotes"] == []
+    assert response.json["enote"] == {}

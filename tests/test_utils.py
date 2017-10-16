@@ -1,8 +1,7 @@
-import pytest
 import json
+import base64
+import pytest
 import nacl.secret
-
-import cenotes.utils.other
 from cenotes import exceptions, models
 from cenotes.utils import crypto, api, other
 
@@ -29,7 +28,7 @@ def test_encrypt_decrypt():
 def test_enforce_bytes():
     def dummy_func(x, y, z):
         return x, y, z
-    results = cenotes.utils.other.enforce_bytes(
+    results = other.enforce_bytes(
         kwargs_names=["y"])(dummy_func)("test1", y="test2", z="test3")
     assert isinstance(results[0], bytes), type(results[0])
     assert isinstance(results[1], bytes), type(results[1])
@@ -109,34 +108,11 @@ def test_craft_json_response_default_success():
     assert json.loads(api.craft_json_response())["success"] is True
 
 
-def test_craft_json_response_multiple_notes(db):
-    note1 = models.Note("test1")
-    note2 = models.Note("test2")
-    models.db.session.add(note1, note2)
-    models.db.session.commit()
-    response = json.loads(api.craft_json_response(enotes=[note1, note2]))
-    assert (set(map(crypto.server_key_sym_decrypt,
-                    map(lambda x: x["enote_id"], response["enotes"])))
-            == set(map(str, [note1.id, note2.id])))
-    for attribute, model_attr in (
-            ("enote_expiration_date", "iso_expiration_date"),
-            ("enote_visits_count", "visits_count"),
-            ("enote_max_visits", "max_visits")):
-        assert (set(map(lambda x: x[attribute], response["enotes"]))
-                == set(map(lambda x: getattr(x, model_attr), [note1, note2])))
-
-    assert (tuple(map(lambda x: x["enote_key"], response["enotes"]))
-            == tuple(["", ""]))
-
-
 def test_get_request_params():
     params = api.get_request_params(
         dict(note_id="2", note_id_key="id-key", note_key="note-key",
              note="encrypt me", expiration_date="never",
              visits_count="maximum", max_visits="zero", other_option="what?"))
-    assert set(params._fields) == {"note_id", "note_id_key", "note_key",
-                                   "note", "no_store", "expiration_date",
-                                   "visits_count", "max_visits"}
     assert params.note_id == "2"
     assert params.note_id_key == "id-key"
     assert params.note_key == "note-key"
@@ -144,4 +120,4 @@ def test_get_request_params():
     assert params.expiration_date == "never"
     assert params.visits_count == "maximum"
     assert params.max_visits == "zero"
-    assert params.no_store is None
+    assert params.no_store is False
