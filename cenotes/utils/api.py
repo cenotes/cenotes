@@ -1,5 +1,6 @@
 import json
-from cenotes.utils import cen_params
+
+from cenotes.utils import CENParams
 from cenotes.utils.crypto import server_key_sym_encrypt
 
 
@@ -21,5 +22,4 @@ def craft_json_response(
 
 
 def get_request_params(request_params):
-    return cen_params(**{
-        key: request_params.get(key) for key in cen_params._fields})
+    return CENParams(**request_params)
