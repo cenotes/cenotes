@@ -106,7 +106,7 @@ def test_craft_json_response_default_success():
     assert json.loads(utils.craft_json_response())["success"] is True
 
 
-def test_craft_json_response_multiple_notes(app):
+def test_craft_json_response_multiple_notes(db):
     note1 = models.Note("test1")
     note2 = models.Note("test2")
     models.db.session.add(note1, note2)
@@ -142,5 +142,3 @@ def test_get_request_params():
     assert params.visits_count == "maximum"
     assert params.max_visits == "zero"
     assert params.no_store is None
-
-
