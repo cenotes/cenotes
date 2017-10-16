@@ -70,6 +70,8 @@ docs: ## generate Sphinx HTML documentation, including API docs
 	sphinx-apidoc -o docs/ cenotes
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
+	rm -f requirements-dev.txt
+	pipenv lock --requirements > requirements-dev.txt
 	$(BROWSER) docs/_build/html/index.html
 
 servedocs: docs ## compile the docs watching for changes
