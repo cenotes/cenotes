@@ -1,7 +1,6 @@
 from flask import jsonify, Blueprint, request
 from cenotes.utils import crypto as cu_crypto, api as capi
 
-
 notes_bp = Blueprint('notes', __name__, url_prefix='/notes')
 
 
@@ -28,9 +27,15 @@ def delete_note(note_id, key):
     pass
 
 
-@notes_bp.route("/n/<key>/", methods=["POST"])
-@notes_bp.route("/n/<key>/<note>", methods=["POST"])
-def encrypt_note(key, note=None):
-    if not note:
-        note = request.get_json(silent=True)
-    pass
+@notes_bp.route("/encrypt/", methods=["POST"])
+@notes_bp.route("/encrypt/<key>/", methods=["POST"])
+def encrypt_note(key=None):
+    request_params = request.get_json(silent=True) or {}
+    cen_parameters = capi.get_request_params(request_params)
+
+    new_note, final_key = cu_crypto.encrypt_note(cen_parameters, key)
+    if cen_parameters.no_store:
+
+        return capi.craft_json_response(payload=new_note, key=final_key), 200
+
+    return capi.craft_json_response(enote=new_note, key=final_key), 200

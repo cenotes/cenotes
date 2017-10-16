@@ -3,7 +3,18 @@ import base64
 import pytest
 import nacl.secret
 from cenotes import exceptions, models
-from cenotes.utils import crypto, api, other
+from cenotes.utils import crypto, api, other, CENParams
+
+
+def assert_decrypt(note, key, plaintext):
+    assert (crypto.user_key_sym_decrypt(note.payload, key).decode()
+            == plaintext)
+
+
+def assert_url_safe_note_decrypt(note, key, plaintext):
+    assert crypto.url_safe_sym_decrypt(
+        note, crypto.craft_secret_box(
+            crypto.craft_key_from_password(key))) == plaintext
 
 
 def test_craft_key():
@@ -121,3 +132,59 @@ def test_get_request_params():
     assert params.visits_count == "maximum"
     assert params.max_visits == "zero"
     assert params.no_store is False
+
+
+def test_generate_url_safe_pass():
+    assert isinstance(crypto.generate_url_safe_pass(), str)
+
+
+def test_encrypt_note_simple_no_key(db):
+    plaintext = "test-note"
+    assert models.Note.query.count() == 0
+    note, ekey = crypto.encrypt_note(CENParams(note=plaintext))
+    assert models.Note.query.count() == 1
+    assert note.payload != plaintext.encode()
+    assert_decrypt(note, base64.urlsafe_b64decode(ekey), plaintext)
+
+
+def test_encrypt_note_simple_param_key(db):
+    plaintext = "test-note"
+    test_key = "testalalla"
+    assert models.Note.query.count() == 0
+    note, ekey = crypto.encrypt_note(
+        CENParams(note=plaintext, note_key=test_key))
+    assert models.Note.query.count() == 1
+    assert base64.urlsafe_b64decode(ekey).decode() == test_key
+    assert_decrypt(note, test_key, plaintext)
+
+
+def test_encrypt_note_special_char_key(db):
+    plaintext = "test-note"
+    test_key = "test|WQPOI@(*!"
+    assert models.Note.query.count() == 0
+    note, ekey = crypto.encrypt_note(
+        CENParams(note=plaintext, note_key=test_key))
+    assert models.Note.query.count() == 1
+    assert ekey != test_key
+    assert base64.urlsafe_b64decode(ekey).decode() == test_key
+    assert_decrypt(note, test_key, plaintext)
+
+
+def test_encrypt_note_no_note(db):
+    test_key = "test|WQPOI@(*!"
+    assert models.Note.query.count() == 0
+    with pytest.raises(exceptions.InvalidUsage):
+        crypto.encrypt_note(CENParams(note_key=test_key))
+    assert models.Note.query.count() == 0
+
+
+def test_encrypt_no_store(db):
+    plaintext = "test-note"
+    test_key = "test|WQPOI@(*!"
+    assert models.Note.query.count() == 0
+    note, ekey = crypto.encrypt_note(
+        CENParams(note=plaintext, note_key=test_key, no_store=True))
+    assert models.Note.query.count() == 0
+    assert ekey != test_key
+    assert base64.urlsafe_b64decode(ekey).decode() == test_key
+    assert_url_safe_note_decrypt(note, test_key, plaintext)

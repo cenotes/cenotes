@@ -28,3 +28,13 @@ class Note(db.Model):
     def iso_expiration_date(self):
         return (self.expiration_date.isoformat()
                 if self.expiration_date else None)
+
+
+def create_new_note(cen_parameters, payload):
+    new_note = Note(payload)
+    new_note.expiration_date = cen_parameters.expiration_date
+    new_note.visits_count = cen_parameters.visits_count
+    new_note.max_visits = cen_parameters.max_visits
+    db.session.add(new_note)
+    db.session.commit()
+    return new_note

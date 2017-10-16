@@ -3,7 +3,7 @@ from flask import current_app
 from nacl import utils as nacl_utils, secret, exceptions, pwhash
 
 import cenotes.exceptions
-from cenotes import models
+from cenotes.models import create_new_note
 from cenotes.utils.other import enforce_bytes
 
 kdf = pwhash.kdf_scryptsalsa208sha256
@@ -65,3 +65,24 @@ def user_key_sym_encrypt(what, password):
 def user_key_sym_decrypt(what, password):
     return craft_secret_box(
         craft_key_from_password(password)).decrypt(what)
+
+
+def encrypt_note(cen_parameters, key=None):
+    if not cen_parameters.note:
+        raise cenotes.exceptions.InvalidUsage("Note payload cannot be empty")
+
+    key = ((key or cen_parameters.note_key or "").encode()
+           or generate_random_chars())
+
+    # needs to be url safe so we can share it around
+    url_safe_key = base64.urlsafe_b64encode(key)
+
+    if cen_parameters.no_store:
+        return url_safe_sym_encrypt(
+            cen_parameters.note,
+            craft_secret_box(craft_key_from_password(key))
+        ), url_safe_key.decode()
+
+    new_note = create_new_note(
+        cen_parameters, user_key_sym_encrypt(cen_parameters.note, key))
+    return new_note, url_safe_key.decode()
