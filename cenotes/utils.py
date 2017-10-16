@@ -109,19 +109,16 @@ def user_key_sym_decrypt(what, password):
 
 def craft_json_response(success=True, enotes=tuple(), **kwargs):
     return json.dumps(
-        dict(success=success if not kwargs.get("error") else False,
-             error=kwargs.get("error", ""),
-             enotes=[
-                 {"enote_id": server_key_sym_encrypt(
-                     str(getattr(enote, "id", ""))),
-                  "enote_key": kwargs.get("enote_key", ""),
-                  "enote_expiration_date": getattr(
-                      enote, "iso_expiration_date", ""),
-                  "enote_visits_count": getattr(enote, "visits_count", ""),
-                  "enote_max_visits": getattr(enote, "max_visits", "")}
-                 for enote in enotes]
-             )
-    )
+        {"success": success if not kwargs.get("error") else False,
+         "error": kwargs.get("error", ""),
+         "enotes": [
+             {"enote_id": server_key_sym_encrypt(str(enote.id)),
+              "enote_key": kwargs.get("enote_key", ""),
+              "enote_expiration_date": enote.iso_expiration_date,
+              "enote_visits_count": enote.visits_count,
+              "enote_max_visits": enote.max_visits,
+              "plaintext": kwargs.get("plaintext", "")} for enote in enotes]
+         })
 
 
 def get_request_params(request_params):
