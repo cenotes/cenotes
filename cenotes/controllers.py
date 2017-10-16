@@ -1,6 +1,8 @@
 from flask import jsonify, Blueprint, request
+from cenotes.utils import crypto as cu_crypto, api as capi
 
-notes_bp = Blueprint('auth', __name__, url_prefix='/notes')
+
+notes_bp = Blueprint('notes', __name__, url_prefix='/notes')
 
 
 @notes_bp.route("/", methods=["GET"])

@@ -1,5 +1,6 @@
 import pytest
-from cenotes import create_app, utils, db as _db
+from cenotes import create_app, db as _db
+from cenotes.utils import crypto
 from config_backend import Testing
 
 
@@ -19,9 +20,9 @@ def db(app):
 
 @pytest.fixture(scope="session", name="testing_key")
 def _key():
-    return utils.craft_key_from_password("testing")
+    return crypto.craft_key_from_password("testing")
 
 
 @pytest.fixture(scope="session", name="testing_box")
 def _box(testing_key):
-    return utils.craft_secret_box(testing_key)
+    return crypto.craft_secret_box(testing_key)

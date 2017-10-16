@@ -1,6 +1,6 @@
 from flask import Blueprint
 from cenotes.exceptions import InvalidUsage, InvalidKeyORNoteError
-from cenotes.utils import craft_json_response
+from cenotes.utils.api import craft_json_response
 
 error_bp = Blueprint('error_handlers', __name__)
 

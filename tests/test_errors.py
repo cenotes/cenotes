@@ -1,6 +1,3 @@
-import pytest
-
-
 def test_404(client):
     response = client.get("non_existent")
     assert response.status_code == 404

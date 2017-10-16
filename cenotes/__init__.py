@@ -4,7 +4,8 @@ from flask import Flask
 from flask_migrate import Migrate
 import nacl.secret
 from cenotes.models import db
-from cenotes import controllers, errors, utils
+from cenotes import controllers, errors
+from cenotes.utils.crypto import craft_key_from_password
 
 migrate = Migrate()
 
@@ -19,7 +20,7 @@ def create_app(app_settings=None):
     migrate.init_app(app, db)
 
     app.server_box = nacl.secret.SecretBox(
-        utils.craft_key_from_password(app.config["SERVER_ENCRYPTION_KEY"]))
+        craft_key_from_password(app.config["SERVER_ENCRYPTION_KEY"]))
 
     app.register_blueprint(controllers.notes_bp)
     app.register_blueprint(errors.error_bp)
