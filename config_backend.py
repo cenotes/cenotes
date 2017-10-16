@@ -45,4 +45,6 @@ class Development(Config):
 
 class Testing(Config):
     TESTING = True
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///{0}'.format(
+        os.path.join(Config.BASE_DIR, 'cenotes_test.sqlite3'))
     SERVER_ENCRYPTION_KEY = "TESTING_KEY".encode()
