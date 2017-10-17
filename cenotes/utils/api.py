@@ -1,7 +1,7 @@
 import json
-
+from flask import current_app
 from cenotes.utils import CENParams
-from cenotes.utils.crypto import server_key_sym_encrypt
+from cenotes.utils.crypto import encrypt_with_box, url_safe_encode
 
 
 def craft_json_response(
@@ -14,7 +14,8 @@ def craft_json_response(
          "plaintext": plaintext,
          "payload": payload,
          "enote":
-             {"enote_id": server_key_sym_encrypt(str(enote.id)),
+             {"enote_id": url_safe_encode(encrypt_with_box(
+                 str(enote.id), current_app.server_box)),
               "enote_expiration_date": enote.iso_expiration_date,
               "enote_visits_count": enote.visits_count,
               "enote_max_visits": enote.max_visits} if enote else {}

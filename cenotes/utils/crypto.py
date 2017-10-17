@@ -1,7 +1,5 @@
 import base64
-from flask import current_app
 from nacl import utils as nacl_utils, secret, exceptions, pwhash
-
 import cenotes.exceptions
 from cenotes.models import create_new_note
 from cenotes.utils.other import enforce_bytes
@@ -20,11 +18,8 @@ def generate_url_safe_pass(size=32):
     return base64.urlsafe_b64encode(generate_random_chars(size)).decode()
 
 
+@enforce_bytes(kwargs_names="password")
 def craft_key_from_password(password):
-    try:
-        password = password.encode()
-    except AttributeError:
-        pass
     return kdf(secret.SecretBox.KEY_SIZE, password, salt,
                opslimit=ops, memlimit=mem)
 
@@ -34,55 +29,66 @@ def craft_secret_box(key):
 
 
 @enforce_bytes(kwargs_names="what")
-def url_safe_sym_encrypt(what, secret_box):
-    return base64.urlsafe_b64encode(secret_box.encrypt(what)).decode()
+def url_safe_encode(what):
+    return base64.urlsafe_b64encode(what).decode()
 
 
 @enforce_bytes(kwargs_names="what")
-def url_safe_sym_decrypt(what, secret_box):
+def url_safe_decode(what):
+    return base64.urlsafe_b64decode(what)
+
+
+@enforce_bytes(kwargs_names="what")
+def encrypt_with_box(what, secret_box):
+    return secret_box.encrypt(what)
+
+
+@enforce_bytes(nof_args=2, kwargs_names=["what", "key"])
+def encrypt_with_key(what, key):
+    return encrypt_with_box(what, craft_secret_box(key))
+
+
+@enforce_bytes(kwargs_names="what")
+def encrypt_with_password(what, password):
+    return encrypt_with_key(what, craft_key_from_password(password))
+
+
+@enforce_bytes(kwargs_names="what")
+def decrypt_with_box(what, secret_box):
     try:
-        return secret_box.decrypt(base64.urlsafe_b64decode(what)).decode()
+        return secret_box.decrypt(what)
     except exceptions.CryptoError as err:
         raise cenotes.exceptions.InvalidKeyORNoteError(err)
 
 
 @enforce_bytes(kwargs_names="what")
-def server_key_sym_encrypt(what):
-    return url_safe_sym_encrypt(what, current_app.server_box)
+def decrypt_with_key(what, key):
+    return decrypt_with_box(what, craft_secret_box(key))
 
 
 @enforce_bytes(kwargs_names="what")
-def server_key_sym_decrypt(what):
-    return url_safe_sym_decrypt(what, current_app.server_box)
+def decrypt_with_password(what, password):
+    return decrypt_with_key(what, craft_key_from_password(password))
 
 
-@enforce_bytes(kwargs_names="what")
-def user_key_sym_encrypt(what, password):
-    return craft_secret_box(craft_key_from_password(password)).encrypt(what)
-
-
-@enforce_bytes(kwargs_names="what")
-def user_key_sym_decrypt(what, password):
-    return craft_secret_box(
-        craft_key_from_password(password)).decrypt(what)
-
-
-def encrypt_note(cen_parameters, key=None):
-    if not cen_parameters.note:
+def encrypt_note(note, password=None):
+    if not note:
         raise cenotes.exceptions.InvalidUsage("Note payload cannot be empty")
 
-    key = ((key or cen_parameters.note_key or "").encode()
-           or generate_random_chars())
-
+    password = (password or "").encode() or generate_random_chars()
     # needs to be url safe so we can share it around
-    url_safe_key = base64.urlsafe_b64encode(key)
+    url_safe_password = base64.urlsafe_b64encode(password).decode()
 
-    if cen_parameters.no_store:
-        return url_safe_sym_encrypt(
-            cen_parameters.note,
-            craft_secret_box(craft_key_from_password(key))
-        ), url_safe_key.decode()
+    return encrypt_with_password(note, password), url_safe_password
 
-    new_note = create_new_note(
-        cen_parameters, user_key_sym_encrypt(cen_parameters.note, key))
-    return new_note, url_safe_key.decode()
+
+def craft_url_safe_encrypted_payload(cen_parameters, key=None):
+    payload, encoded_key = encrypt_note(cen_parameters.note,
+                                        key or cen_parameters.note_key)
+    return base64.urlsafe_b64encode(payload).decode(), encoded_key
+
+
+def create_encrypted_note(cen_parameters, key=None):
+    payload, encoded_key = encrypt_note(cen_parameters.note,
+                                        key or cen_parameters.note_key)
+    return create_new_note(cen_parameters, payload), encoded_key

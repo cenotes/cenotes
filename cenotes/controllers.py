@@ -33,9 +33,12 @@ def encrypt_note(key=None):
     request_params = request.get_json(silent=True) or {}
     cen_parameters = capi.get_request_params(request_params)
 
-    new_note, final_key = cu_crypto.encrypt_note(cen_parameters, key)
     if cen_parameters.no_store:
-
+        new_note, final_key = cu_crypto.craft_url_safe_encrypted_payload(
+            cen_parameters, key)
         return capi.craft_json_response(payload=new_note, key=final_key), 200
 
-    return capi.craft_json_response(enote=new_note, key=final_key), 200
+    else:
+        new_note, final_key = cu_crypto.create_encrypted_note(
+            cen_parameters, key)
+        return capi.craft_json_response(enote=new_note, key=final_key), 200

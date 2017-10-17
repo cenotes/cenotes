@@ -7,14 +7,13 @@ from cenotes.utils import crypto, api, other, CENParams
 
 
 def assert_decrypt(note, key, plaintext):
-    assert (crypto.user_key_sym_decrypt(note.payload, key).decode()
+    assert (crypto.decrypt_with_password(note.payload, key).decode()
             == plaintext)
 
 
-def assert_url_safe_note_decrypt(note, key, plaintext):
-    assert crypto.url_safe_sym_decrypt(
-        note, crypto.craft_secret_box(
-            crypto.craft_key_from_password(key))) == plaintext
+def assert_url_safe_note_decrypt(note, password, plaintext):
+    assert crypto.decrypt_with_password(
+        base64.urlsafe_b64decode(note), password).decode() == plaintext
 
 
 def test_craft_key():
@@ -67,41 +66,46 @@ def test_maketuple():
     assert other.make_tuple({"lala"}) == ("lala",)
 
 
-def test_url_safe_sym_encrypt(testing_box):
+def test_encrypt_with_box(testing_box):
     plaintext = "can you see me?"
-    assert crypto.url_safe_sym_encrypt(plaintext, testing_box) != plaintext
+    assert crypto.encrypt_with_box(plaintext, testing_box) != plaintext
 
 
-def test_url_safe_sym_decrypt(testing_box):
+def test_decrypt_with_box(testing_box):
     plaintext = "can you see me?"
-    ciphertext = crypto.url_safe_sym_encrypt(plaintext, testing_box)
-    assert crypto.url_safe_sym_decrypt(ciphertext, testing_box) == plaintext
+    ciphertext = crypto.encrypt_with_box(plaintext, testing_box)
+    assert (crypto.decrypt_with_box(ciphertext, testing_box).decode()
+            == plaintext)
 
 
-def test_url_safe_sym_decrypt_wrong_password(testing_box):
+def test_decrypt_with_box_wrong_password(testing_box):
     plaintext = "can you see me?"
-    ciphertext = crypto.url_safe_sym_encrypt(plaintext, testing_box)
+    ciphertext = crypto.encrypt_with_box(plaintext, testing_box)
     with pytest.raises(exceptions.InvalidKeyORNoteError):
-        crypto.url_safe_sym_decrypt(ciphertext, crypto.craft_secret_box(
+        crypto.decrypt_with_box(ciphertext, crypto.craft_secret_box(
             crypto.craft_key_from_password("mallory")))
 
 
-def test_server_key_sym_encrypt(app):
+def test_encrypt_with_password():
     plaintext = "can you see me?"
-    assert crypto.server_key_sym_encrypt(plaintext) != plaintext
+    password = "test"
+    assert crypto.encrypt_with_password(plaintext, password) != plaintext
 
 
-def test_server_key_sym_decrypt(app):
+def test_decrypt_with_password():
     plaintext = "can you see me?"
-    ciphertext = crypto.server_key_sym_encrypt(plaintext)
-    assert crypto.server_key_sym_decrypt(ciphertext) == plaintext
+    password = "test"
+    assert crypto.decrypt_with_password(
+        crypto.encrypt_with_password(
+            plaintext, password), password).decode() == plaintext
 
 
-def test_user_encrypt_decrypt():
+def test_key_encrypt_decrypt():
     plaintext = "can you see me?"
-    assert (crypto.user_key_sym_decrypt(
-        crypto.user_key_sym_encrypt(
-            plaintext, "user-key!"), "user-key!").decode() == plaintext)
+    key = crypto.craft_key_from_password("test")
+    assert (crypto.decrypt_with_key(
+        crypto.encrypt_with_key(
+            plaintext, key), key).decode() == plaintext)
 
 
 def test_generate_random_chars():
@@ -141,7 +145,7 @@ def test_generate_url_safe_pass():
 def test_encrypt_note_simple_no_key(db):
     plaintext = "test-note"
     assert models.Note.query.count() == 0
-    note, ekey = crypto.encrypt_note(CENParams(note=plaintext))
+    note, ekey = crypto.create_encrypted_note(CENParams(note=plaintext))
     assert models.Note.query.count() == 1
     assert note.payload != plaintext.encode()
     assert_decrypt(note, base64.urlsafe_b64decode(ekey), plaintext)
@@ -151,7 +155,7 @@ def test_encrypt_note_simple_param_key(db):
     plaintext = "test-note"
     test_key = "testalalla"
     assert models.Note.query.count() == 0
-    note, ekey = crypto.encrypt_note(
+    note, ekey = crypto.create_encrypted_note(
         CENParams(note=plaintext, note_key=test_key))
     assert models.Note.query.count() == 1
     assert base64.urlsafe_b64decode(ekey).decode() == test_key
@@ -162,7 +166,7 @@ def test_encrypt_note_special_char_key(db):
     plaintext = "test-note"
     test_key = "test|WQPOI@(*!"
     assert models.Note.query.count() == 0
-    note, ekey = crypto.encrypt_note(
+    note, ekey = crypto.create_encrypted_note(
         CENParams(note=plaintext, note_key=test_key))
     assert models.Note.query.count() == 1
     assert ekey != test_key
@@ -171,10 +175,9 @@ def test_encrypt_note_special_char_key(db):
 
 
 def test_encrypt_note_no_note(db):
-    test_key = "test|WQPOI@(*!"
     assert models.Note.query.count() == 0
     with pytest.raises(exceptions.InvalidUsage):
-        crypto.encrypt_note(CENParams(note_key=test_key))
+        crypto.encrypt_note(note="")
     assert models.Note.query.count() == 0
 
 
@@ -182,9 +185,24 @@ def test_encrypt_no_store(db):
     plaintext = "test-note"
     test_key = "test|WQPOI@(*!"
     assert models.Note.query.count() == 0
-    note, ekey = crypto.encrypt_note(
+    note, ekey = crypto.craft_url_safe_encrypted_payload(
         CENParams(note=plaintext, note_key=test_key, no_store=True))
     assert models.Note.query.count() == 0
     assert ekey != test_key
     assert base64.urlsafe_b64decode(ekey).decode() == test_key
     assert_url_safe_note_decrypt(note, test_key, plaintext)
+
+
+def test_url_safe_encode():
+    text = "test me|"
+    assert crypto.url_safe_encode(text) != text.encode()
+
+
+def test_url_safe_decode():
+    text1 = "test me"
+    text2 = "test me|||"
+
+    assert (crypto.url_safe_encode(text1)
+            == base64.b64encode(text1.encode()).decode())
+    assert (crypto.url_safe_decode(crypto.url_safe_encode(text2)).decode()
+            == text2)

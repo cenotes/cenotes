@@ -1,5 +1,4 @@
 import json
-import base64
 from cenotes.models import Note
 from cenotes.utils import crypto
 
@@ -9,7 +8,7 @@ def assert_successful_request(response):
     assert response.json["success"] is True
 
 
-def test_encrypt_simple(db, client):
+def test_encrypt_simple(app, db, client):
     plaintext = "test-note"
     assert Note.query.count() == 0
     response = client.post("notes/encrypt/",
@@ -19,12 +18,12 @@ def test_encrypt_simple(db, client):
     assert Note.query.count() == 1
 
     note = Note.query.one()
-    key = base64.urlsafe_b64decode(
-        response.json["key"].encode())
-    assert crypto.user_key_sym_decrypt(
+    key = crypto.url_safe_decode(response.json["key"])
+    assert crypto.decrypt_with_password(
         note.payload, key).decode() == plaintext
-    assert str(note.id) == crypto.server_key_sym_decrypt(
-        response.json["enote"]["enote_id"])
+    assert str(note.id) == crypto.decrypt_with_box(
+        crypto.url_safe_decode(
+            response.json["enote"]["enote_id"]), app.server_box).decode()
 
 
 def test_encrypt_no_note(db, client):
@@ -47,8 +46,6 @@ def test_encrypt_no_store(db, client):
     assert_successful_request(response)
     assert Note.query.count() == 0
 
-    note = response.json["payload"]
-    key = base64.urlsafe_b64decode(response.json["key"].encode())
-    assert crypto.url_safe_sym_decrypt(
-        note, crypto.craft_secret_box(
-            crypto.craft_key_from_password(key))) == plaintext
+    note = crypto.url_safe_decode(response.json["payload"])
+    key = crypto.url_safe_decode(response.json["key"])
+    assert crypto.decrypt_with_password(note, key).decode() == plaintext
