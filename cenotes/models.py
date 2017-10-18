@@ -1,5 +1,6 @@
 from datetime import date
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm.exc import NoResultFound
 
 db = SQLAlchemy()
 
@@ -29,6 +30,14 @@ class Note(db.Model):
         return (self.expiration_date.isoformat()
                 if self.expiration_date else None)
 
+    @property
+    def has_expired(self):
+        return self.expiration_date and self.expiration_date < date.today()
+
+    @property
+    def should_not_exist(self):
+        return self.has_expired or self.visits_count >= self.max_visits
+
 
 def create_new_note(cen_parameters, payload):
     new_note = Note(payload)
@@ -38,3 +47,23 @@ def create_new_note(cen_parameters, payload):
     db.session.add(new_note)
     db.session.commit()
     return new_note
+
+
+def update_note(note):
+    note.visits_count += 1
+
+    if note.should_not_exist:
+        db.session.delete(note)
+
+    db.session.commit()
+
+
+def fetch_note(note_id):
+    note = Note.query.filter_by(id=note_id).first()
+
+    if note.should_not_exist:
+        db.session.delete(note)
+        db.session.commit()
+        raise NoResultFound()
+
+    return note

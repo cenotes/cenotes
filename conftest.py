@@ -1,5 +1,7 @@
 import pytest
+from datetime import date, timedelta
 from cenotes import create_app, db as _db
+from cenotes.models import Note
 from cenotes.utils import crypto
 from config_backend import Testing
 
@@ -26,3 +28,19 @@ def _key():
 @pytest.fixture(scope="session", name="testing_box")
 def _box(testing_key):
     return crypto.craft_secret_box(testing_key)
+
+
+@pytest.fixture(scope="function", name="note")
+def _note(db):
+    note = Note(b"test")
+    db.session.add(note)
+    db.session.commit()
+    return note
+
+
+@pytest.fixture(scope="function", name="old_note")
+def _old_note(db):
+    note = Note(b"test", expiration_date=date.today() - timedelta(weeks=36))
+    db.session.add(note)
+    db.session.commit()
+    return note
