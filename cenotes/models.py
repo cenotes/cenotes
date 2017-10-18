@@ -66,4 +66,7 @@ def fetch_note(note_id):
         db.session.commit()
         raise NoResultFound()
 
-    return note
+    note_payload = note.payload
+    update_note(note)
+
+    return note_payload
