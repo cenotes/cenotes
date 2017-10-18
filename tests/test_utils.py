@@ -2,6 +2,7 @@ import json
 import base64
 import pytest
 import nacl.secret
+import nacl.exceptions
 from cenotes import exceptions, models
 from cenotes.utils import crypto, api, other, CENParams
 
@@ -206,3 +207,12 @@ def test_url_safe_decode():
             == base64.b64encode(text1.encode()).decode())
     assert (crypto.url_safe_decode(crypto.url_safe_encode(text2)).decode()
             == text2)
+
+
+def test_safe_decryption():
+    @other.safe_decryption
+    def raise_a_crypto_error():
+        raise nacl.exceptions.CryptoError("catch!")
+
+    with pytest.raises(exceptions.InvalidKeyORNoteError):
+        raise_a_crypto_error()

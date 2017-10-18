@@ -1,4 +1,7 @@
 from functools import wraps
+from nacl.exceptions import CryptoError
+from sqlalchemy.orm.exc import NoResultFound
+from cenotes.exceptions import InvalidKeyORNoteError
 
 
 def make_type(mtype, *args):
@@ -39,3 +42,14 @@ def enforce_bytes(nof_args=1, kwargs_names=tuple(["test"])):
             return func(*new_args, **new_kwargs)
         return enforce
     return enforcer
+
+
+def safe_decryption(func):
+    @wraps(func)
+    def safe_decrypt(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except (CryptoError, UnicodeDecodeError,
+                NoResultFound, ValueError) as err:
+            raise InvalidKeyORNoteError(err)
+    return safe_decrypt
