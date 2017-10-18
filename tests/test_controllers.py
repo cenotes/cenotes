@@ -18,7 +18,7 @@ def test_encrypt_simple(app, db, client):
     plaintext = "test-note"
     assert Note.query.count() == 0
     response = client.post("notes/encrypt/",
-                           data=json.dumps(dict(note=plaintext)),
+                           data=json.dumps(dict(plaintext=plaintext)),
                            content_type='application/json')
     assert_successful_request(response)
     assert Note.query.count() == 1
@@ -29,14 +29,14 @@ def test_encrypt_simple(app, db, client):
         note.payload, key).decode() == plaintext
     assert str(note.id) == crypto.decrypt_with_box(
         crypto.url_safe_decode(
-            response.json["enote"]["enote_id"]), app.server_box).decode()
+            response.json["payload"]), app.server_box).decode()
 
 
 def test_encrypt_no_note(db, client):
 
     assert Note.query.count() == 0
     response = client.post("notes/encrypt/",
-                           data=json.dumps(dict(note_key="test")),
+                           data=json.dumps(dict(key="test")),
                            content_type='application/json')
     assert response.status_code == 400
     assert response.json["success"] is False
@@ -47,7 +47,7 @@ def test_encrypt_no_store(db, client):
     plaintext = "test-note"
     assert Note.query.count() == 0
     response = client.post(
-        "notes/encrypt/", data=json.dumps(dict(note=plaintext, no_store=True)),
+        "notes/encrypt/", data=json.dumps(dict(plaintext=plaintext, no_store=True)),
         content_type='application/json')
     assert_successful_request(response)
     assert Note.query.count() == 0
@@ -60,7 +60,7 @@ def test_encrypt_no_store(db, client):
 def test_decrypt_payload(client):
     plaintext = "test-note"
     enc_response = client.post(
-        "notes/encrypt/", data=json.dumps(dict(note=plaintext, no_store=True)),
+        "notes/encrypt/", data=json.dumps(dict(plaintext=plaintext, no_store=True)),
         content_type='application/json')
     note = enc_response.json["payload"]
     key = enc_response.json["key"]
@@ -73,7 +73,7 @@ def test_decrypt_payload(client):
 def test_decrypt_payload_wrong_password(client):
     plaintext = "test-note"
     enc_response = client.post(
-        "notes/encrypt/", data=json.dumps(dict(note=plaintext, no_store=True)),
+        "notes/encrypt/", data=json.dumps(dict(plaintext=plaintext, no_store=True)),
         content_type='application/json')
     note = enc_response.json["payload"]
     key = crypto.url_safe_encode(enc_response.json["key"])
@@ -85,12 +85,12 @@ def test_decrypt_payload_wrong_password(client):
 def test_decrypt_note(db, client):
     plaintext = "test-note"
     enc_response = client.post(
-        "notes/encrypt/", data=json.dumps(dict(note=plaintext)),
+        "notes/encrypt/", data=json.dumps(dict(plaintext=plaintext)),
         content_type='application/json')
-    note = enc_response.json["enote"]["enote_id"]
+    encr_note_id = enc_response.json["payload"]
     key = enc_response.json["key"]
 
-    dec_response = client.get("/notes/{0}/{1}".format(note, key))
+    dec_response = client.get("/notes/{0}/{1}".format(encr_note_id, key))
     assert_successful_request(dec_response)
     assert dec_response.json["plaintext"] == plaintext
 
@@ -98,25 +98,25 @@ def test_decrypt_note(db, client):
 def test_decrypt_note_wrong_password(db, client):
     plaintext = "test-note"
     enc_response = client.post(
-        "notes/encrypt/", data=json.dumps(dict(note=plaintext)),
+        "notes/encrypt/", data=json.dumps(dict(plaintext=plaintext)),
         content_type='application/json')
-    note = enc_response.json["enote"]["enote_id"]
+    encr_note_id = enc_response.json["payload"]
     key = crypto.url_safe_encode(enc_response.json["key"])
 
-    dec_response = client.get("/notes/{0}/{1}".format(note, key))
+    dec_response = client.get("/notes/{0}/{1}".format(encr_note_id, key))
     assert_bad_request(dec_response)
 
 
 def test_decrypt_note_one_time(db, client):
     plaintext = "test-note"
     enc_response = client.post(
-        "notes/encrypt/", data=json.dumps(dict(note=plaintext)),
+        "notes/encrypt/", data=json.dumps(dict(plaintext=plaintext)),
         content_type='application/json')
     assert Note.query.count() == 1
-    note = enc_response.json["enote"]["enote_id"]
+    encr_note_id = enc_response.json["payload"]
     key = enc_response.json["key"]
 
-    dec_response = client.get("/notes/{0}/{1}".format(note, key))
+    dec_response = client.get("/notes/{0}/{1}".format(encr_note_id, key))
     assert_successful_request(dec_response)
     assert Note.query.count() == 0
 

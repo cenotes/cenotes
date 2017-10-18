@@ -56,4 +56,8 @@ def encrypt_note(key=None):
     else:
         new_note, final_key = cu_crypto.create_encrypted_note(
             cen_parameters, key)
-        return capi.craft_json_response(enote=new_note, key=final_key), 200
+        encrypted_id = cu_crypto.url_safe_encode(
+            cu_crypto.encrypt_with_box(str(new_note.id),
+                                       current_app.server_box))
+        return capi.craft_json_response(
+            payload=encrypted_id, enote=new_note, key=final_key), 200

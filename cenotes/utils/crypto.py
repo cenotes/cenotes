@@ -82,14 +82,14 @@ def encrypt_note(note, password=None):
 
 
 def craft_url_safe_encrypted_payload(cen_parameters, key=None):
-    payload, encoded_key = encrypt_note(cen_parameters.note,
-                                        key or cen_parameters.note_key)
+    payload, encoded_key = encrypt_note(cen_parameters.plaintext,
+                                        key or cen_parameters.key)
     return base64.urlsafe_b64encode(payload).decode(), encoded_key
 
 
 def create_encrypted_note(cen_parameters, key=None):
-    payload, encoded_key = encrypt_note(cen_parameters.note,
-                                        key or cen_parameters.note_key)
+    payload, encoded_key = encrypt_note(cen_parameters.plaintext,
+                                        key or cen_parameters.key)
     return create_new_note(cen_parameters, payload), encoded_key
 
 

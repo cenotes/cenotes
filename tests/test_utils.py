@@ -126,13 +126,8 @@ def test_craft_json_response_default_success():
 
 def test_get_request_params():
     params = api.get_request_params(
-        dict(note_id="2", note_id_key="id-key", note_key="note-key",
-             note="encrypt me", expiration_date="never",
-             visits_count="maximum", max_visits="zero", other_option="what?"))
-    assert params.note_id == "2"
-    assert params.note_id_key == "id-key"
-    assert params.note_key == "note-key"
-    assert params.note == "encrypt me"
+        dict(expiration_date="never", visits_count="maximum",
+             max_visits="zero", other_option="what?"))
     assert params.expiration_date == "never"
     assert params.visits_count == "maximum"
     assert params.max_visits == "zero"
@@ -146,7 +141,7 @@ def test_generate_url_safe_pass():
 def test_encrypt_note_simple_no_key(db):
     plaintext = "test-note"
     assert models.Note.query.count() == 0
-    note, ekey = crypto.create_encrypted_note(CENParams(note=plaintext))
+    note, ekey = crypto.create_encrypted_note(CENParams(plaintext=plaintext))
     assert models.Note.query.count() == 1
     assert note.payload != plaintext.encode()
     assert_decrypt(note, base64.urlsafe_b64decode(ekey), plaintext)
@@ -157,7 +152,7 @@ def test_encrypt_note_simple_param_key(db):
     test_key = "testalalla"
     assert models.Note.query.count() == 0
     note, ekey = crypto.create_encrypted_note(
-        CENParams(note=plaintext, note_key=test_key))
+        CENParams(plaintext=plaintext, key=test_key))
     assert models.Note.query.count() == 1
     assert base64.urlsafe_b64decode(ekey).decode() == test_key
     assert_decrypt(note, test_key, plaintext)
@@ -168,7 +163,7 @@ def test_encrypt_note_special_char_key(db):
     test_key = "test|WQPOI@(*!"
     assert models.Note.query.count() == 0
     note, ekey = crypto.create_encrypted_note(
-        CENParams(note=plaintext, note_key=test_key))
+        CENParams(plaintext=plaintext, key=test_key))
     assert models.Note.query.count() == 1
     assert ekey != test_key
     assert base64.urlsafe_b64decode(ekey).decode() == test_key
@@ -187,7 +182,7 @@ def test_encrypt_no_store(db):
     test_key = "test|WQPOI@(*!"
     assert models.Note.query.count() == 0
     note, ekey = crypto.craft_url_safe_encrypted_payload(
-        CENParams(note=plaintext, note_key=test_key, no_store=True))
+        CENParams(plaintext=plaintext, key=test_key, no_store=True))
     assert models.Note.query.count() == 0
     assert ekey != test_key
     assert base64.urlsafe_b64decode(ekey).decode() == test_key
