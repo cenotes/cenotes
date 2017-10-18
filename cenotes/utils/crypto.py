@@ -1,8 +1,8 @@
 import base64
-from nacl import utils as nacl_utils, secret, exceptions, pwhash
+from nacl import utils as nacl_utils, secret, pwhash
 import cenotes.exceptions
-from cenotes.models import create_new_note
-from cenotes.utils.other import enforce_bytes
+from cenotes.models import create_new_note, fetch_note
+from cenotes.utils.other import enforce_bytes, safe_decryption
 
 kdf = pwhash.kdf_scryptsalsa208sha256
 salt = nacl_utils.random(pwhash.SCRYPT_SALTBYTES)
@@ -33,6 +33,7 @@ def url_safe_encode(what):
     return base64.urlsafe_b64encode(what).decode()
 
 
+@safe_decryption
 @enforce_bytes(kwargs_names="what")
 def url_safe_decode(what):
     return base64.urlsafe_b64decode(what)
@@ -53,12 +54,10 @@ def encrypt_with_password(what, password):
     return encrypt_with_key(what, craft_key_from_password(password))
 
 
+@safe_decryption
 @enforce_bytes(kwargs_names="what")
 def decrypt_with_box(what, secret_box):
-    try:
-        return secret_box.decrypt(what)
-    except exceptions.CryptoError as err:
-        raise cenotes.exceptions.InvalidKeyORNoteError(err)
+    return secret_box.decrypt(what)
 
 
 @enforce_bytes(kwargs_names="what")
@@ -92,3 +91,14 @@ def create_encrypted_note(cen_parameters, key=None):
     payload, encoded_key = encrypt_note(cen_parameters.note,
                                         key or cen_parameters.note_key)
     return create_new_note(cen_parameters, payload), encoded_key
+
+
+@safe_decryption
+def decrypt_payload(payload, key):
+    real_key = base64.urlsafe_b64decode(key)
+    return decrypt_with_password(payload, real_key)
+
+
+@safe_decryption
+def decrypt_note(note_id, key):
+    return decrypt_payload(fetch_note(int(note_id)), key)

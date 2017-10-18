@@ -1,5 +1,6 @@
-from flask import jsonify, Blueprint, request
+from flask import jsonify, Blueprint, request, current_app
 from cenotes.utils import crypto as cu_crypto, api as capi
+from cenotes.exceptions import InvalidKeyORNoteError
 
 notes_bp = Blueprint('notes', __name__, url_prefix='/notes')
 
@@ -9,21 +10,35 @@ def index():
     return jsonify(text="Welcome to Cenotes!"), 200
 
 
-@notes_bp.route("/<note_id>/<key>", methods=["GET"])
-@notes_bp.route("/<note_id>", methods=["GET"])
-def decrypt_note(note_id, key):
+@notes_bp.route("/<enote_id_or_payload>/<key>", methods=["GET"])
+@notes_bp.route("/<enote_id_or_payload>", methods=["GET"])
+def decrypt_note(enote_id_or_payload, key):
+    enote_id_or_payload = cu_crypto.url_safe_decode(enote_id_or_payload)
+    try:
+        enote_id = cu_crypto.decrypt_with_box(
+            enote_id_or_payload, current_app.server_box)
+    except InvalidKeyORNoteError:
+        # if we can't decrypt it, we assume it's a payload instead of id
+        enote_id = None
+
+    if enote_id:
+        plaintext = cu_crypto.decrypt_note(enote_id, key).decode()
+    else:
+        plaintext = cu_crypto.decrypt_payload(
+            enote_id_or_payload, key).decode()
+
+    return capi.craft_json_response(plaintext=plaintext), 200
+
+
+@notes_bp.route("/<enote_id>/<key>", methods=["PATCH"])
+@notes_bp.route("/<enote_id>", methods=["PATCH"])
+def modify_note(enote_id, key):
     pass
 
 
-@notes_bp.route("/<note_id>/<key>", methods=["PATCH"])
-@notes_bp.route("/<note_id>", methods=["PATCH"])
-def modify_note(note_id, key):
-    pass
-
-
-@notes_bp.route("/<note_id>/<key>", methods=["DELETE"])
-@notes_bp.route("/<note_id>", methods=["DELETE"])
-def delete_note(note_id, key):
+@notes_bp.route("/<enote_id>/<key>", methods=["DELETE"])
+@notes_bp.route("/<enote_id>", methods=["DELETE"])
+def delete_note(enote_id, key):
     pass
 
 
