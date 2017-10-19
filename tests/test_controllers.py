@@ -1,4 +1,5 @@
 import json
+from datetime import date
 from cenotes.models import Note
 from cenotes.utils import crypto
 
@@ -17,9 +18,10 @@ def assert_bad_request(response):
 def test_encrypt_simple(app, db, client):
     plaintext = "test-note"
     assert Note.query.count() == 0
-    response = client.post("notes/encrypt/",
-                           data=json.dumps(dict(plaintext=plaintext)),
-                           content_type='application/json')
+    response = client.post(
+        "notes/encrypt/", data=json.dumps(
+            dict(plaintext=plaintext, expiration_date="19-10-2017")),
+        content_type='application/json')
     assert_successful_request(response)
     assert Note.query.count() == 1
 
@@ -29,6 +31,7 @@ def test_encrypt_simple(app, db, client):
     assert str(note.id) == crypto.decrypt_with_box(
         crypto.url_safe_decode(
             response.json["payload"]), app.server_box).decode()
+    assert note.expiration_date == date(year=2017, month=10, day=19)
 
 
 def test_encrypt_no_note(db, client):

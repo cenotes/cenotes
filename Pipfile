@@ -10,6 +10,7 @@ pynacl = "*"
 "flask-sqlalchemy" = "*"
 "flask-migrate" = "*"
 "flask-script" = "*"
+"python-dateutil" = "*"
 
 
 [dev-packages]

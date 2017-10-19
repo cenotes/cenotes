@@ -1,4 +1,5 @@
 from datetime import date
+from dateutil import parser
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -41,7 +42,10 @@ class Note(db.Model):
 
 def create_new_note(cen_parameters, payload):
     new_note = Note(payload)
-    new_note.expiration_date = cen_parameters.expiration_date
+    try:
+        new_note.expiration_date = parser.parse(cen_parameters.expiration_date)
+    except (OverflowError, ValueError, TypeError):
+        new_note.expiration_date = None
     new_note.visits_count = cen_parameters.visits_count
     new_note.max_visits = cen_parameters.max_visits
     db.session.add(new_note)
