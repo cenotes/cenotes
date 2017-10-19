@@ -7,9 +7,7 @@ def generate_random_chars(size=32):
 
 
 class Config(object):
-    DEBUG = True
-    DEVELOPMENT = True
-    TESTING = False
+    DEBUG = DEVELOPMENT = TESTING = False
 
     # Define the application directory
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
@@ -35,7 +33,7 @@ class Config(object):
 
 
 class Production(Config):
-    DEBUG = False
+    DEBUG = DEVELOPMENT = TESTING = False
 
 
 class Development(Config):
