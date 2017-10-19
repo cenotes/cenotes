@@ -49,7 +49,7 @@ def safe_decryption(func):
     def safe_decrypt(*args, **kwargs):
         try:
             return func(*args, **kwargs)
-        except (CryptoError, UnicodeDecodeError,
-                NoResultFound, ValueError) as err:
+        except (CryptoError, UnicodeDecodeError, NoResultFound,
+                ValueError, TypeError) as err:
             raise InvalidKeyORNoteError(err)
     return safe_decrypt

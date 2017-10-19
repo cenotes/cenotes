@@ -11,7 +11,6 @@ def index():
 
 
 @notes_bp.route("/<enote_id_or_payload>/<key>", methods=["GET"])
-@notes_bp.route("/<enote_id_or_payload>", methods=["GET"])
 def decrypt_note(enote_id_or_payload, key):
     enote_id_or_payload = cu_crypto.url_safe_decode(enote_id_or_payload)
     try:

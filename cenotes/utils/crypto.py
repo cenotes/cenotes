@@ -4,11 +4,6 @@ import cenotes.exceptions
 from cenotes.models import create_new_note, fetch_note
 from cenotes.utils.other import enforce_bytes, safe_decryption
 
-kdf = pwhash.kdf_scryptsalsa208sha256
-salt = nacl_utils.random(pwhash.SCRYPT_SALTBYTES)
-ops = pwhash.SCRYPT_OPSLIMIT_SENSITIVE
-mem = pwhash.SCRYPT_MEMLIMIT_SENSITIVE
-
 
 def generate_random_chars(size=32):
     return nacl_utils.random(size)
@@ -20,6 +15,10 @@ def generate_url_safe_pass(size=32):
 
 @enforce_bytes(kwargs_names="password")
 def craft_key_from_password(password):
+    kdf = pwhash.kdf_scryptsalsa208sha256
+    salt = nacl_utils.random(pwhash.SCRYPT_SALTBYTES)
+    ops = pwhash.SCRYPT_OPSLIMIT_SENSITIVE
+    mem = pwhash.SCRYPT_MEMLIMIT_SENSITIVE
     return kdf(secret.SecretBox.KEY_SIZE, password, salt,
                opslimit=ops, memlimit=mem)
 
@@ -51,7 +50,8 @@ def encrypt_with_key(what, key):
 
 @enforce_bytes(kwargs_names="what")
 def encrypt_with_password(what, password):
-    return encrypt_with_key(what, craft_key_from_password(password))
+    key = craft_key_from_password(password)
+    return encrypt_with_key(what, key), key
 
 
 @safe_decryption
@@ -65,26 +65,22 @@ def decrypt_with_key(what, key):
     return decrypt_with_box(what, craft_secret_box(key))
 
 
-@enforce_bytes(kwargs_names="what")
-def decrypt_with_password(what, password):
-    return decrypt_with_key(what, craft_key_from_password(password))
-
-
 def encrypt_note(note, password=None):
     if not note:
         raise cenotes.exceptions.InvalidUsage("Note payload cannot be empty")
 
     password = (password or "").encode() or generate_random_chars()
-    # needs to be url safe so we can share it around
-    url_safe_password = base64.urlsafe_b64encode(password).decode()
 
-    return encrypt_with_password(note, password), url_safe_password
+    ciphertext, key = encrypt_with_password(note, password)
+
+    # needs to be url safe so we can share it around
+    return ciphertext, url_safe_encode(key)
 
 
 def craft_url_safe_encrypted_payload(cen_parameters, key=None):
     payload, encoded_key = encrypt_note(cen_parameters.plaintext,
                                         key or cen_parameters.key)
-    return base64.urlsafe_b64encode(payload).decode(), encoded_key
+    return url_safe_encode(payload), encoded_key
 
 
 def create_encrypted_note(cen_parameters, key=None):
@@ -95,8 +91,7 @@ def create_encrypted_note(cen_parameters, key=None):
 
 @safe_decryption
 def decrypt_payload(payload, key):
-    real_key = base64.urlsafe_b64decode(key)
-    return decrypt_with_password(payload, real_key)
+    return decrypt_with_key(payload, url_safe_decode(key))
 
 
 @safe_decryption

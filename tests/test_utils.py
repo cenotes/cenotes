@@ -7,14 +7,9 @@ from cenotes import exceptions, models
 from cenotes.utils import crypto, api, other, CENParams
 
 
-def assert_decrypt(note, key, plaintext):
-    assert (crypto.decrypt_with_password(note.payload, key).decode()
-            == plaintext)
-
-
-def assert_url_safe_note_decrypt(note, password, plaintext):
-    assert crypto.decrypt_with_password(
-        base64.urlsafe_b64decode(note), password).decode() == plaintext
+def assert_decrypt(payload, key, plaintext):
+    assert (crypto.decrypt_with_key(
+        payload, crypto.url_safe_decode(key)).decode() == plaintext)
 
 
 def test_craft_key():
@@ -30,8 +25,9 @@ def test_secret_box_crafting(testing_key):
 def test_encrypt_decrypt():
     password = "test"
     plaintext = "can you see me?"
-    box1 = crypto.craft_secret_box(crypto.craft_key_from_password(password))
-    box2 = crypto.craft_secret_box(crypto.craft_key_from_password(password))
+    key = crypto.craft_key_from_password(password)
+    box1 = crypto.craft_secret_box(key)
+    box2 = crypto.craft_secret_box(key)
     ciphertext = box1.encrypt(plaintext.encode())
     assert box2.decrypt(ciphertext).decode() == plaintext
 
@@ -93,12 +89,11 @@ def test_encrypt_with_password():
     assert crypto.encrypt_with_password(plaintext, password) != plaintext
 
 
-def test_decrypt_with_password():
+def test_decrypt_with_key():
     plaintext = "can you see me?"
     password = "test"
-    assert crypto.decrypt_with_password(
-        crypto.encrypt_with_password(
-            plaintext, password), password).decode() == plaintext
+    assert crypto.decrypt_with_key(*crypto.encrypt_with_password(
+        plaintext, password)).decode() == plaintext
 
 
 def test_key_encrypt_decrypt():
@@ -144,7 +139,7 @@ def test_encrypt_note_simple_no_key(db):
     note, ekey = crypto.create_encrypted_note(CENParams(plaintext=plaintext))
     assert models.Note.query.count() == 1
     assert note.payload != plaintext.encode()
-    assert_decrypt(note, base64.urlsafe_b64decode(ekey), plaintext)
+    assert_decrypt(note.payload, ekey, plaintext)
 
 
 def test_encrypt_note_simple_param_key(db):
@@ -154,8 +149,7 @@ def test_encrypt_note_simple_param_key(db):
     note, ekey = crypto.create_encrypted_note(
         CENParams(plaintext=plaintext, key=test_key))
     assert models.Note.query.count() == 1
-    assert base64.urlsafe_b64decode(ekey).decode() == test_key
-    assert_decrypt(note, test_key, plaintext)
+    assert_decrypt(note.payload, ekey, plaintext)
 
 
 def test_encrypt_note_special_char_key(db):
@@ -166,8 +160,7 @@ def test_encrypt_note_special_char_key(db):
         CENParams(plaintext=plaintext, key=test_key))
     assert models.Note.query.count() == 1
     assert ekey != test_key
-    assert base64.urlsafe_b64decode(ekey).decode() == test_key
-    assert_decrypt(note, test_key, plaintext)
+    assert_decrypt(note.payload, ekey, plaintext)
 
 
 def test_encrypt_note_no_note(db):
@@ -185,8 +178,7 @@ def test_encrypt_no_store(db):
         CENParams(plaintext=plaintext, key=test_key, no_store=True))
     assert models.Note.query.count() == 0
     assert ekey != test_key
-    assert base64.urlsafe_b64decode(ekey).decode() == test_key
-    assert_url_safe_note_decrypt(note, test_key, plaintext)
+    assert_decrypt(crypto.url_safe_decode(note), ekey, plaintext)
 
 
 def test_url_safe_encode():

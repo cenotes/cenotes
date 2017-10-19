@@ -25,8 +25,7 @@ def test_encrypt_simple(app, db, client):
 
     note = Note.query.one()
     key = crypto.url_safe_decode(response.json["key"])
-    assert crypto.decrypt_with_password(
-        note.payload, key).decode() == plaintext
+    assert crypto.decrypt_with_key(note.payload, key).decode() == plaintext
     assert str(note.id) == crypto.decrypt_with_box(
         crypto.url_safe_decode(
             response.json["payload"]), app.server_box).decode()
@@ -54,7 +53,7 @@ def test_encrypt_no_store(db, client):
 
     note = crypto.url_safe_decode(response.json["payload"])
     key = crypto.url_safe_decode(response.json["key"])
-    assert crypto.decrypt_with_password(note, key).decode() == plaintext
+    assert crypto.decrypt_with_key(note, key).decode() == plaintext
 
 
 def test_decrypt_payload(client):
