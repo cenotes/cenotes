@@ -32,6 +32,7 @@ project_root = os.path.dirname(cwd)
 sys.path.insert(0, project_root)
 
 import cenotes
+import manage
 
 # -- General configuration ---------------------------------------------
 
@@ -273,3 +274,17 @@ texinfo_documents = [
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
+
+
+# Generate the api documentation
+# Kinda hack here, but there's no easy way to generate in runtime code block
+# for sphinx
+response_format = ",\n".join(manage.show_json_response_format().split(","))
+request_format = ",\n".join(manage.show_json_request_format().split(","))
+
+
+rst_prolog = """
+.. |response| replace:: {0}
+.. |request| replace:: {1}
+
+""".format(response_format, request_format)

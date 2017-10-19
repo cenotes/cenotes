@@ -13,6 +13,8 @@ Welcome to CENotes's documentation!
    readme
    contributing
    authors
+   api
+   routes
    modules
 
 Indices and tables
