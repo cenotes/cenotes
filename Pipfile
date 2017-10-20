@@ -5,12 +5,13 @@ name = "pypi"
 
 [packages]
 
-flask = "*"
-pynacl = "*"
-"flask-sqlalchemy" = "*"
-"flask-migrate" = "*"
-"flask-script" = "*"
+Flask = "*"
+PyNaCl = "*"
+"Flask-SQLAlchemy" = "*"
+"Flask-Migrate" = "*"
+"Flask-Script" = "*"
 "python-dateutil" = "*"
+click = "*"
 
 
 [dev-packages]
