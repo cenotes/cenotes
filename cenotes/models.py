@@ -63,7 +63,7 @@ def update_note(note):
 
 
 def fetch_note(note_id):
-    note = Note.query.filter_by(id=note_id).first()
+    note = Note.query.filter_by(id=note_id).one()
 
     if note.should_not_exist:
         db.session.delete(note)
