@@ -1,9 +1,9 @@
-import pytest
 from datetime import date, timedelta
+import pytest
 from cenotes import create_app, db as _db
+from cenotes.config_backend import Testing
 from cenotes.models import Note
 from cenotes.utils import crypto
-from config_backend import Testing
 
 
 @pytest.fixture(name="app", scope="session")
