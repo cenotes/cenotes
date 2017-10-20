@@ -16,7 +16,8 @@ if sys.version_info[0] < 3:
 
 def create_app(app_settings=None):
     app = Flask(__name__)
-    app.config.from_object(app_settings or os.environ['APP_SETTINGS'])
+    app.config.from_object(app_settings or os.environ.get('APP_SETTINGS')
+                           or "cenotes.config_backend.Production")
     db.init_app(app)
     migrate.init_app(app, db)
 
