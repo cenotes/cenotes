@@ -11,6 +11,22 @@ Subpackages
 Submodules
 ----------
 
+cenotes\.cli module
+-------------------
+
+.. automodule:: cenotes.cli
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+cenotes\.config\_backend module
+-------------------------------
+
+.. automodule:: cenotes.config_backend
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 cenotes\.controllers module
 ---------------------------
 

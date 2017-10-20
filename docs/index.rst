@@ -11,10 +11,10 @@ Welcome to CENotes's documentation!
    :caption: Contents:
 
    readme
+   routes
    contributing
    authors
    api
-   routes
    modules
 
 Indices and tables
