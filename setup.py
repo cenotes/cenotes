@@ -28,7 +28,7 @@ test_requirements = [
 
 setup(
     name='cenotes',
-    version='0.2.2',
+    version='0.3.0',
     description="Cryptographical Expendable Notes",
     long_description=readme + '\n\n' + history,
     author="John Paraskevopoulos",
