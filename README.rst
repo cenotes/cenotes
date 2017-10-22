@@ -64,8 +64,8 @@ Many ways to run this:
 
            pip install -r requirements-dev.txt
 
-   3. Set the environment variables as shown in :ref:`settings`
-   4. Check your database table as shown in :ref:`db_schema` is up-to-date
+   3. Set the environment variables as shown in settings_
+   4. Check your database table as shown in db_schema_ is up-to-date
 
       .. code-block:: python
 
@@ -86,7 +86,7 @@ Many ways to run this:
 
          sudo pip install cenotes
 
-   2. Set the environment variables as shown in :ref:`settings`
+   2. Set the environment variables as shown in settings_
    3. Run the backend
 
       .. code-block:: python
@@ -113,7 +113,7 @@ This project needs two things to be set as **environment variables**:
 Database schema
 ---------------
 
-As mentioned in :ref:`settings`, you'll need a database connection. The database schema is
+As mentioned in settings_, you'll need a database connection. The database schema is
 simple enough:
 
    .. code-block:: sql

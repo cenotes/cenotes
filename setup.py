@@ -34,6 +34,7 @@ setup(
     author="John Paraskevopoulos",
     author_email='ioparaskev@gmail.comm',
     url='https://github.com/ioparaskev/cenotes',
+    python_requires=">=3.3",
     packages=[
         'cenotes',
         'cenotes.utils'
