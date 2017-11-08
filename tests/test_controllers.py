@@ -72,6 +72,21 @@ def test_decrypt_payload(client):
     assert dec_response.json["plaintext"] == plaintext
 
 
+def test_decrypt_payload_in_json(client):
+    plaintext = "test-note"
+    enc_response = client.post(
+        "notes/encrypt/", data=json.dumps(dict(plaintext=plaintext, no_store=True)),
+        content_type='application/json')
+    note = enc_response.json["payload"]
+    key = enc_response.json["key"]
+
+    dec_response = client.post(
+        "/notes/", data=json.dumps(dict(payload=note, key=key)),
+        content_type='application/json')
+    assert_successful_request(dec_response)
+    assert dec_response.json["plaintext"] == plaintext
+
+
 def test_decrypt_payload_wrong_password(client):
     plaintext = "test-note"
     enc_response = client.post(

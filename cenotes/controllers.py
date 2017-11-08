@@ -1,17 +1,11 @@
-from flask import jsonify, Blueprint, request, current_app
+from flask import Blueprint, request, current_app
 from cenotes.utils import crypto as cu_crypto, api as capi
 from cenotes.exceptions import InvalidKeyORNoteError
 
 notes_bp = Blueprint('notes', __name__, url_prefix='/notes')
 
 
-@notes_bp.route("/", methods=["GET"])
-def index():
-    return jsonify(text="Welcome to Cenotes!"), 200
-
-
-@notes_bp.route("/<enote_id_or_payload>/<key>", methods=["GET"])
-def decrypt_note(enote_id_or_payload, key):
+def _generate_decrypt_response(enote_id_or_payload, key):
     enote_id_or_payload = cu_crypto.url_safe_decode(enote_id_or_payload)
     try:
         enote_id = cu_crypto.decrypt_with_box(
@@ -19,14 +13,27 @@ def decrypt_note(enote_id_or_payload, key):
     except InvalidKeyORNoteError:
         # if we can't decrypt it, we assume it's a payload instead of id
         enote_id = None
-
     if enote_id:
         plaintext = cu_crypto.decrypt_note(enote_id, key).decode()
     else:
         plaintext = cu_crypto.decrypt_payload(
             enote_id_or_payload, key).decode()
-
     return capi.craft_json_response(plaintext=plaintext), 200
+
+
+@notes_bp.route("/", methods=["POST"])
+def decrypt_json_note():
+    request_params = request.get_json(silent=True) or {}
+    cen_parameters = capi.get_request_params(request_params)
+    enote_id_or_payload = cen_parameters.payload
+    key = cen_parameters.key
+
+    return _generate_decrypt_response(enote_id_or_payload, key)
+
+
+@notes_bp.route("/<enote_id_or_payload>/<key>", methods=["GET"])
+def decrypt_note(enote_id_or_payload, key):
+    return _generate_decrypt_response(enote_id_or_payload, key)
 
 
 @notes_bp.route("/<enote_id>/<key>", methods=["PATCH"])
