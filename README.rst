@@ -17,6 +17,8 @@ What is this?
 -------------
 A **backend** project to support encryption/decryption of expendable notes
 
+An example using this backend can be found at https://cenot.es
+
 Features
 --------
 
@@ -27,6 +29,9 @@ Features
    * After that date, the notes are deleted and cannot be retrieved (default is never)
 * Notes that are deleted after N visits
    * After N retrievals of a note, the note is deleted (default is 1)
+* Duress key for immediate note deletion
+   * Using the duresss key instead of the real decryption key will delete the note and respond as if
+     the note didn't exist (to avoid indicating the use of the duress key)
 * Persistent visit notes
    * Notes can be marked as "persistent visit" so that that they are not deleted based on visit count
 
@@ -35,6 +40,9 @@ What this isn't
 ---------------
 UI/Frontend. This is a **backend** project. Frontend solutions will be different projects.
 The reason for this is to allow flexibility in frontend choice and to avoid huge bundle projects.
+
+A **frontend** project that communicates with the **backend** can be found
+`here <https://github.com/ioparaskev/cenotes-reaction>`_
 
 
 How to run
@@ -94,6 +102,21 @@ Many ways to run this:
          cenotes --help
 
 
+How to deploy
+-------------
+
+Example uwsgi file to use to serve the backend:
+
+   .. code-block:: python
+
+      from cenotes import create_app
+
+      application = create_app()
+
+      if __name__ == "__main__":
+          application.run()
+
+
 .. _settings:
 
 Project Settings
@@ -128,14 +151,13 @@ simple enough:
       );
 
 
-Features to be added soon
--------------------------
+Features to be added sometime
+-----------------------------
 
 * Modification of a note's settings
    * Zero visit count
    * Change max visits option
    * Change expiration date
-* Triggering manual deletion of a note (bypass note settings and delete immediately)
 * Public key encryption and user database
 
 
