@@ -53,7 +53,7 @@ Many ways to run this:
 
    1. Clone the repo
 
-      .. code-block:: python
+      .. code-block:: bash
 
          git clone https://github.com/ioparaskev/cenotes.git
 
@@ -61,28 +61,33 @@ Many ways to run this:
 
       * With pipenv (suggested)
 
-        .. code-block:: python
+        .. code-block:: bash
 
            pip install pipenv
            pipenv install
 
       * With pip (not suggested):
 
-        .. code-block:: python
+        .. code-block:: bash
 
            pip install -r requirements-dev.txt
 
    3. Set the environment variables as shown in settings_
-   4. Check your database table as shown in db_schema_ is up-to-date
+   4. Set your `PYTHONPATH` to include the project
+      .. code-block:: bash
 
-      .. code-block:: python
+         export PYTHONPATH=<path-to-the-cloned-repo>:$PYTHONPATH
+
+   5. Check your database table as shown in db_schema_ is up-to-date
+
+      .. code-block:: bash
 
          python manage.py db upgrade
 
 
-   5. Run the backend
+   6. Run the backend
 
-      .. code-block:: python
+      .. code-block:: bash
 
          python run_backend.py --help
 
@@ -90,14 +95,14 @@ Many ways to run this:
 
    1. Install the package
 
-      .. code-block:: python
+      .. code-block:: bash
 
          sudo pip install cenotes
 
    2. Set the environment variables as shown in settings_
    3. Run the backend
 
-      .. code-block:: python
+      .. code-block:: bash
 
          cenotes --help
 
@@ -149,6 +154,25 @@ simple enough:
               expiration_date DATE,
               PRIMARY KEY (id)
       );
+
+
+Maintenance
+-----------
+To avoid having expired unvisited notes hanging around your database, you will need
+to schedule a cleanup to run periodically (cronjob or other way) that will delete
+the expired notes. This can be done easily:
+
+* If you have cloned the repo
+
+   .. code-block:: bash
+
+      python cenotes/cli.py --cleanup
+
+* If you have installed the package
+
+   .. code-block:: bash
+
+      cenotes --cleanup
 
 
 Features to be added sometime
