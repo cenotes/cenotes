@@ -24,7 +24,8 @@ def show_json_request_format(indent=False):
 def show_json_response_format(indent=False):
     func = functools.partial(json.dumps, indent=4) if indent else json.dumps
     return func(craft_response(
-        error="", success=True, plaintext="", key="", payload="ciphertext",
+        error="", success=True, plaintext="", key="", dkey="",
+        payload="ciphertext",
         enote=Note(payload="ciphertext", expiration_date=date.today())))
 
 

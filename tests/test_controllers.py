@@ -137,3 +137,72 @@ def test_decrypt_note_one_time(db, client):
     assert_successful_request(dec_response)
     assert Note.query.count() == 0
 
+
+def test_decrypt_note_two_times(db, client):
+    plaintext = "test-note"
+    enc_response = client.post(
+        "notes/encrypt/",
+        data=json.dumps(dict(plaintext=plaintext, max_visits=2)),
+        content_type='application/json')
+    assert Note.query.count() == 1
+    encr_note_id = enc_response.json["payload"]
+    key = enc_response.json["key"]
+
+    dec_response = client.get("/notes/{0}/{1}".format(encr_note_id, key))
+    assert_successful_request(dec_response)
+    assert Note.query.count() == 1
+
+    dec_response = client.get("/notes/{0}/{1}".format(encr_note_id, key))
+    assert_successful_request(dec_response)
+    assert Note.query.count() == 0
+
+
+def test_delete_note_in_json(db, client):
+    plaintext = "test-note"
+    enc_response = client.post(
+        "notes/encrypt/",
+        data=json.dumps(dict(plaintext=plaintext, max_visits=10)),
+        content_type='application/json')
+    note = enc_response.json["payload"]
+    duress_key = enc_response.json["duress_key"]
+
+    assert Note.query.count() == 1
+
+    dec_response = client.post(
+        "/notes/", data=json.dumps(dict(payload=note, key=duress_key)),
+        content_type='application/json')
+    assert_bad_request(dec_response)
+    assert Note.query.count() == 0
+
+
+def test_delete_note(db, client):
+    plaintext = "test-note"
+    enc_response = client.post(
+        "notes/encrypt/",
+        data=json.dumps(dict(plaintext=plaintext, max_visits=10)),
+        content_type='application/json')
+    note = enc_response.json["payload"]
+    duress_key = enc_response.json["duress_key"]
+
+    assert Note.query.count() == 1
+
+    dec_response = client.get("/notes/{0}/{1}".format(note, duress_key))
+
+    assert_bad_request(dec_response)
+    assert Note.query.count() == 0
+
+
+def test_avoid_note_deletion_issuing_payload_as_key(db, client):
+    plaintext = "test-note"
+    enc_response = client.post(
+        "notes/encrypt/",
+        data=json.dumps(dict(plaintext=plaintext, max_visits=10)),
+        content_type='application/json')
+    note = enc_response.json["payload"]
+
+    assert Note.query.count() == 1
+
+    dec_response = client.get("/notes/{0}/{1}".format(note, note))
+
+    assert_bad_request(dec_response)
+    assert Note.query.count() == 1

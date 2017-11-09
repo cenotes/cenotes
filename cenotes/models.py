@@ -74,3 +74,8 @@ def fetch_note(note_id):
     update_note(note)
 
     return note_payload
+
+
+def delete_note(note_id):
+    db.session.delete(Note.query.filter_by(id=note_id).one())
+    db.session.commit()
