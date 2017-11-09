@@ -8,22 +8,22 @@ Currently available routes and methods
 * decrypt_note
     * /notes/<enote_id_or_payload>/<key>
     * HEAD,OPTIONS,GET
-* delete_note
-    * /notes/<enote_id>
-    * /notes/<enote_id>/<key>
-    * DELETE,OPTIONS
+* decrypt_json_note
+    * /notes/
+    * POST,OPTIONS
 * encrypt_note
     * /notes/encrypt/
     * /notes/encrypt/<key>/
     * OPTIONS,POST
-* index
-    * /notes/
-    * HEAD,OPTIONS,GET
-* modify_note
-    * /notes/<enote_id>
-    * /notes/<enote_id>/<key>
-    * OPTIONS,PATCH
-
+* **currently not working**
+    * modify_note
+        * /notes/<enote_id>
+        * /notes/<enote_id>/<key>
+        * OPTIONS,PATCH
+    * delete_note
+        * /notes/<enote_id>
+        * /notes/<enote_id>/<key>
+        * DELETE,OPTIONS
 
 Finding routes and accepted methods
 -----------------------------------
