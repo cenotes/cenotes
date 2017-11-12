@@ -11,11 +11,17 @@ Welcome to CENotes's documentation!
    :caption: Contents:
 
    readme
+   run
+   settings
+   deployment
    routes
-   contributing
-   authors
    api
+   design
+   qa
+   contributing
    modules
+   authors
+   history
 
 Indices and tables
 ==================
