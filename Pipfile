@@ -6,7 +6,7 @@ name = "pypi"
 [packages]
 
 Flask = "*"
-PyNaCl = "*"
+PyNaCl = {version = ">=1.2.0"}
 "Flask-SQLAlchemy" = "*"
 "Flask-Migrate" = "*"
 "Flask-Script" = "*"

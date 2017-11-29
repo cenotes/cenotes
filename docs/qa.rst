@@ -88,8 +88,8 @@ Make sure to check :doc:`design` before reading this
 - Why not use a front end solution like JS?
    Using a front end solution does not remove the trust factor completely. Unless every time you
    visit a site you thoroughly check the JS running and make sure it won't leak any information.
-   Some time in the future a frontend encryption option might be added though (keep in sync with `cenotes-reaction`_).
-   But make no mistake, trust will always be there :)
+   Some time in the future a solution to provide encryption locally will be added but not in the browser.
+   Keep in sync for new cenotes projects
 - Why should I trust the server?
    Anything said will never be 100% sufficient. I cannot prove that you should trust me 100% or the code served.
 - I don't trust you but wan't to use this. What can I do?

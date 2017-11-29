@@ -7,11 +7,10 @@ Algorithms
 
 To encrypt the information, this software makes use of the **secret key encryption** of the
 `PyNaCL package`_. Currently the `Salsa20`_ stream cipher is used for the encryption and
-`Poly1305`_ for the data integrity. The **key derivation** currently is achieved using the
-**scrypt** algorithm in combination with the **Salsa 20/8** core algorithm and the **Pbkdf2-SHA256**.
-Salt is calculated on the fly, and there are no precomputed salts. This is the current kdf
-function the PyNaCL package provides. In a future release this will be replaced by the
-argon2i algorithm.
+`Poly1305`_ for the data integrity. The **key derivation** is achieved using the `Argon2`_
+algorithm with the **argon2i** variant and fallsback to **scrypt** algorithm in combination
+with the **Salsa 20/8** core algorithm and the **Pbkdf2-SHA256** in case argon2 is not available.
+Salt is calculated on the fly, and there are no precomputed salts.
 
 
 How magic happens
@@ -74,3 +73,4 @@ open an issue (for more details see :doc:`contributing`).
 .. _PyNaCL package: https://pynacl.readthedocs.io/en/latest/
 .. _Salsa20: https://en.wikipedia.org/wiki/Salsa20
 .. _Poly1305: https://en.wikipedia.org/wiki/Poly1305
+.. _Argon2: https://en.wikipedia.org/wiki/Argon2

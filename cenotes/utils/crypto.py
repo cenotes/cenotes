@@ -5,6 +5,19 @@ from cenotes.models import create_new_note, fetch_note
 from cenotes.utils.other import enforce_bytes, safe_decryption
 
 
+def fetch_kdf_params():
+    try:
+        return (pwhash.argon2i.kdf,
+                nacl_utils.random(pwhash.argon2i.SALTBYTES),
+                pwhash.argon2i.OPSLIMIT_SENSITIVE,
+                pwhash.argon2i.MEMLIMIT_SENSITIVE)
+    except AttributeError:
+        return (pwhash.kdf_scryptsalsa208sha256,
+                nacl_utils.random(pwhash.SCRYPT_SALTBYTES),
+                pwhash.SCRYPT_OPSLIMIT_SENSITIVE,
+                pwhash.SCRYPT_MEMLIMIT_SENSITIVE)
+
+
 def generate_random_chars(size=32):
     return nacl_utils.random(size)
 
@@ -15,10 +28,7 @@ def generate_url_safe_pass(size=32):
 
 @enforce_bytes(kwargs_names="password")
 def craft_key_from_password(password):
-    kdf = pwhash.kdf_scryptsalsa208sha256
-    salt = nacl_utils.random(pwhash.SCRYPT_SALTBYTES)
-    ops = pwhash.SCRYPT_OPSLIMIT_SENSITIVE
-    mem = pwhash.SCRYPT_MEMLIMIT_SENSITIVE
+    kdf, salt, ops, mem = fetch_kdf_params()
     return kdf(secret.SecretBox.KEY_SIZE, password, salt,
                opslimit=ops, memlimit=mem)
 
