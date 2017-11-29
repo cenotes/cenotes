@@ -1,7 +1,7 @@
 How to run
 ==========
 
-**You will need Python 3** *(Python 2 is not supported sorry)*
+**You will need Python >= 3.4** *(Python 2 is not supported sorry)*
 
 Many ways to run this:
 
