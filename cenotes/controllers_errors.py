@@ -11,16 +11,13 @@ def not_found(error):
     return craft_json_response(error="Not found"), 404
 
 
-@error_bp.app_errorhandler(400)
-def bad_request(error):
-    return craft_json_response(error="Bad request"), 404
-
-
 @error_bp.app_errorhandler(InvalidUsage)
+@error_bp.app_errorhandler(400)
+@error_bp.app_errorhandler(405)
 def invalid_usage(error):
     return craft_json_response(error=str(error)), 400
 
 
-@error_bp.app_errorhandler(InvalidKeyORNoteError)
+@error_bp.app_errorhandler(CenotesError)
 def invalid_key_or_note(error):
-    return craft_json_response(error=str(error)), 400
+    return craft_json_response(error="Invalid key or note not found"), 400
