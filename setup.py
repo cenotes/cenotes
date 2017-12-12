@@ -10,8 +10,8 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
 requirements = [
-    "flask==0.12.2",
-    "pynacl==1.1.2",
+    "flask>=0.12.2",
+    "pynacl>=1.2.0",
     "flask-sqlalchemy==2.3.2",
     "flask-migrate==2.1.1",
     "flask-script==2.0.6",
