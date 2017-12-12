@@ -1,6 +1,6 @@
 import os
 import binascii
-from cenotes.utils import crypto
+from cenotes_lib import crypto
 
 
 def is_url_base64_encoded(what):

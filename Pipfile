@@ -12,6 +12,7 @@ PyNaCl = {version = ">=1.2.0"}
 "Flask-Script" = "*"
 "python-dateutil" = "*"
 click = "*"
+"cenotes-cli" = "*"
 
 
 [dev-packages]

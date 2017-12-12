@@ -3,7 +3,7 @@ import pytest
 from cenotes import create_app, db as _db
 from cenotes.config_backend import Testing
 from cenotes.models import Note
-from cenotes.utils import crypto
+from cenotes_lib import crypto
 
 
 @pytest.fixture(name="app", scope="session")
