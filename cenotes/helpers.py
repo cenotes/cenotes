@@ -23,7 +23,7 @@ def check_duress_signal(func):
         except (CenotesError, AssertionError):
             return func(enote_id, key)
 
-        safe_decryption(delete_note)(int(enote_id))
+        safe_decryption([NoResultFound])(delete_note)(int(enote_id))
         raise CenotesError()
     return duress
 

@@ -12,7 +12,7 @@ def assert_successful_request(response):
 def assert_bad_request(response):
     assert response.status_code == 400
     assert response.json["success"] is False
-    assert response.json["error"] != ""
+    assert response.json["error"] == "Invalid key or note not found"
 
 
 def test_encrypt_simple(app, db, client):
@@ -205,10 +205,21 @@ def test_delete_note(db, client):
 
     assert Note.query.count() == 1
 
-    dec_response = client.get("/notes/{0}/{1}".format(note, duress_key))
-
-    assert_bad_request(dec_response)
+    assert_bad_request(client.get("/notes/{0}/{1}".format(note, duress_key)))
     assert Note.query.count() == 0
+
+
+def test_delete_note_multiple_times(db, client):
+    plaintext = "test-note"
+    enc_response = client.post(
+        "notes/encrypt/",
+        data=json.dumps(dict(plaintext=plaintext, max_visits=10)),
+        content_type='application/json')
+    note = enc_response.json["payload"]
+    duress_key = enc_response.json["duress_key"]
+
+    assert_bad_request(client.get("/notes/{0}/{1}".format(note, duress_key)))
+    assert_bad_request(client.get("/notes/{0}/{1}".format(note, duress_key)))
 
 
 def test_avoid_note_deletion_issuing_payload_as_key(db, client):
