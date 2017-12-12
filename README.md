@@ -14,6 +14,7 @@ Status](https://readthedocs.org/projects/cenotes/badge/?version=latest)](https:/
         
     - [Backend](https://github.com/ioparaskev/cenotes)
     - [Frontend](https://github.com/ioparaskev/cenotes-reaction)
+    - [CLI and Libraries](https://github.com/ioparaskev/cenotes-cli)
 
   - [Documentation](https://cenotes.readthedocs.io)
 
@@ -34,8 +35,12 @@ UI/Frontend. This is a **backend** project. Frontend solutions will be
 different projects. The reason for this is to allow flexibility in
 frontend choice and to avoid huge bundle projects.
 
-A **frontend** project that communicates with the **backend** can be
+- A **frontend** project that communicates with the **backend** can be
 found [here](https://github.com/ioparaskev/cenotes-reaction)
+
+- A **cli/library** project to test the encrypt/decrypt actions offline can be found 
+[here](https://github.com/ioparaskev/cenotes-cli). Backend project uses this package 
+for every crypto action
 
 ## Features
 

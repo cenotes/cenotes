@@ -1,13 +1,14 @@
-from datetime import date
 import json
-import functools
+from datetime import date
 from urllib.parse import unquote
-from flask_script import Manager
+
+import functools
 from flask_migrate import MigrateCommand
+from flask_script import Manager
+
 from cenotes import create_app
+from cenotes.api import craft_response, CENParams
 from cenotes.models import Note
-from cenotes.utils import CENParams
-from cenotes.utils.api import craft_response
 
 manager = Manager(create_app)
 manager.add_option("-c", "--config", dest="app_settings", required=False)

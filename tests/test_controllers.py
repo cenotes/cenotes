@@ -1,7 +1,7 @@
 import json
 from datetime import date
 from cenotes.models import Note
-from cenotes.utils import crypto
+from cenotes_lib import crypto
 
 
 def assert_successful_request(response):
@@ -27,7 +27,8 @@ def test_encrypt_simple(app, db, client):
 
     note = Note.query.one()
     key = crypto.url_safe_decode(response.json["key"])
-    assert crypto.decrypt_with_key(note.payload, key).decode() == plaintext
+    assert crypto.decrypt_with_key(crypto.url_safe_decode(note.payload),
+                                   key).decode() == plaintext
     assert str(note.id) == crypto.decrypt_with_box(
         crypto.url_safe_decode(
             response.json["payload"]), app.server_box).decode()
@@ -155,6 +156,24 @@ def test_decrypt_note_two_times(db, client):
     dec_response = client.get("/notes/{0}/{1}".format(encr_note_id, key))
     assert_successful_request(dec_response)
     assert Note.query.count() == 0
+
+
+def test_decrypt_note_more_than_allowed(db, client):
+    plaintext = "test-note"
+    enc_response = client.post(
+        "notes/encrypt/",
+        data=json.dumps(dict(plaintext=plaintext, max_visits=1)),
+        content_type='application/json')
+    assert Note.query.count() == 1
+    encr_note_id = enc_response.json["payload"]
+    key = enc_response.json["key"]
+
+    dec_response = client.get("/notes/{0}/{1}".format(encr_note_id, key))
+    assert_successful_request(dec_response)
+    assert Note.query.count() == 0
+
+    dec_response = client.get("/notes/{0}/{1}".format(encr_note_id, key))
+    assert_bad_request(dec_response)
 
 
 def test_delete_note_in_json(db, client):

@@ -4,8 +4,8 @@ from flask import Flask
 from flask_migrate import Migrate
 import nacl.secret
 from cenotes.models import db
-from cenotes import controllers, errors
-from cenotes.utils.crypto import generate_random_chars, url_safe_encode
+from cenotes import controllers, controllers_errors as errors
+from cenotes_lib.crypto import generate_random_chars, url_safe_encode
 
 migrate = Migrate()
 
