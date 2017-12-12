@@ -5,11 +5,11 @@ name = "pypi"
 
 [packages]
 
-Flask = "*"
-PyNaCl = {version = ">=1.2.0"}
-"Flask-SQLAlchemy" = "*"
-"Flask-Migrate" = "*"
-"Flask-Script" = "*"
+flask = "*"
+pynacl = {version = ">=1.2.0"}
+"flask-sqlalchemy" = "*"
+"flask-migrate" = "*"
+"flask-script" = "*"
 "python-dateutil" = "*"
 click = "*"
 "cenotes-cli" = "*"
@@ -21,7 +21,7 @@ pytest = "*"
 tox = "*"
 "pytest-flask" = "*"
 coverage = "*"
-Sphinx = "*"
+sphinx = "*"
 "sphinx-autobuild" = "*"
 "flake8" = "*"
 bumpversion = "*"
