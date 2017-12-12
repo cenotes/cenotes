@@ -34,10 +34,9 @@ setup(
     author="John Paraskevopoulos",
     author_email='ioparaskev@gmail.comm',
     url='https://github.com/ioparaskev/cenotes',
-    python_requires=">=3.3",
+    python_requires=">=3.4",
     packages=[
         'cenotes',
-        'cenotes.utils'
     ],
     entry_points={
         "console_scripts": ['cenotes = cenotes.cli:main']
