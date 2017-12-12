@@ -2,6 +2,10 @@
 History
 =======
 
+0.6.0 (2017-12-12)
+* Use the external package cenotes-cli that provides cenotes_lib
+* Officially drop py < 3.4 support
+
 0.5.3 (2017-11-12)
 ------------------
 
