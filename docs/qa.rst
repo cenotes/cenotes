@@ -95,11 +95,12 @@ Make sure to check :doc:`design` before reading this
 - I don't trust you but wan't to use this. What can I do?
    Download the backend code and the frontend code (`cenotes-reaction`_) and set up your own server serving this.
 - I don't trust any internet solution (frontend/backend) for encryption operations. What can I do?
-   You can still download the backend code and use the encryption & decryption modules (check :doc:`modules` for more info).
+   You can still download the backend code and use the encryption & decryption modules (check `cenotes-cli`_ for more info).
    In the future, options for no-server usage will be added.
    Otherwise use some other offline encryption solution like PGP, AES etc.
 
 
 
 .. _cenotes-reaction: https://github.com/ioparaskev/cenotes-reaction
+.. _cenotes-cli: https://github.com/ioparaskev/cenotes-cli
 .. _rainbow tables: https://en.wikipedia.org/wiki/Rainbow_table

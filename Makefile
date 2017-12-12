@@ -65,9 +65,6 @@ coverage: ## check code coverage quickly with the default Python
 		$(BROWSER) htmlcov/index.html
 
 docs: ## generate Sphinx HTML documentation, including API docs
-	rm -f docs/cenotes.rst
-	rm -f docs/modules.rst
-	sphinx-apidoc -o docs/ cenotes
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	rm -f requirements-dev.txt

@@ -19,7 +19,6 @@ Welcome to CENotes's documentation!
    design
    qa
    contributing
-   modules
    authors
    history
 
