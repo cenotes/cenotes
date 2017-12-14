@@ -2,6 +2,10 @@
 History
 =======
 
+0.7.0 (2017-12-14)
+------------------
+* Use the external package cenotes-lib
+
 0.6.0 (2017-12-12)
 ------------------
 * Use the external package cenotes-cli that provides cenotes_lib
