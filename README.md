@@ -1,6 +1,6 @@
 # CENotes
 
-[![image](https://travis-ci.org/ioparaskev/cenotes.svg?branch=master)](https://travis-ci.org/ioparaskev/cenotes)
+[![image](https://travis-ci.org/cenotes/cenotes.svg?branch=master)](https://travis-ci.org/cenotes/cenotes)
 [![Documentation
 Status](https://readthedocs.org/projects/cenotes/badge/?version=latest)](https://cenotes.readthedocs.io/en/latest/?badge=latest)
 
@@ -12,9 +12,10 @@ Status](https://readthedocs.org/projects/cenotes/badge/?version=latest)](https:/
 
   - Source code:
         
-    - [Backend](https://github.com/ioparaskev/cenotes)
-    - [Frontend](https://github.com/ioparaskev/cenotes-reaction)
-    - [CLI and Libraries](https://github.com/ioparaskev/cenotes-cli)
+    - [Backend](https://github.com/cenotes/cenotes)
+    - [Frontend](https://github.com/cenotes/cenotes-reaction)
+    - [CLI](https://github.com/cenotes/cenotes-cli)
+    - [Libraries](https://github.com/cenotes/cenotes-lib)
 
   - [Documentation](https://cenotes.readthedocs.io)
 
@@ -36,10 +37,10 @@ different projects. The reason for this is to allow flexibility in
 frontend choice and to avoid huge bundle projects.
 
 - A **frontend** project that communicates with the **backend** can be
-found [here](https://github.com/ioparaskev/cenotes-reaction)
+found [here](https://github.com/cenotes/cenotes-reaction)
 
-- A **cli/library** project to test the encrypt/decrypt actions offline can be found 
-[here](https://github.com/ioparaskev/cenotes-cli). Backend project uses this package 
+- A **cli** project to test the encrypt/decrypt actions offline can be found 
+[here](https://github.com/cenotes/cenotes-cli). Backend project uses this package 
 for every crypto action
 
 ## Features

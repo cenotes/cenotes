@@ -12,6 +12,7 @@ with open('HISTORY.rst') as history_file:
 requirements = [
     "flask>=0.12.2",
     "pynacl>=1.2.0",
+    "cenotes-lib>=0.1.0",
     "flask-sqlalchemy==2.3.2",
     "flask-migrate==2.1.1",
     "flask-script==2.0.6",
@@ -33,7 +34,7 @@ setup(
     long_description=readme + '\n\n' + history,
     author="John Paraskevopoulos",
     author_email='ioparaskev@gmail.comm',
-    url='https://github.com/ioparaskev/cenotes',
+    url='https://github.com/cenotes/cenotes',
     python_requires=">=3.4",
     packages=[
         'cenotes',

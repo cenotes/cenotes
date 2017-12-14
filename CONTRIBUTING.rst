@@ -15,7 +15,7 @@ Types of Contributions
 Report Bugs
 ~~~~~~~~~~~
 
-Report bugs at https://github.com/ioparaskev/cenotes/issues.
+Report bugs at https://github.com/cenotes/cenotes/issues.
 
 If you are reporting a bug, please include:
 
@@ -45,7 +45,7 @@ articles, and such.
 Submit Feedback
 ~~~~~~~~~~~~~~~
 
-The best way to send feedback is to file an issue at https://github.com/ioparaskev/cenotes/issues.
+The best way to send feedback is to file an issue at https://github.com/cenotes/cenotes/issues.
 
 If you are proposing a feature:
 
@@ -102,7 +102,7 @@ Before you submit a pull request, check that it meets these guidelines:
    your new functionality into a function with a docstring, and add the
    feature to the list in README.rst.
 3. The pull request should work for Python 3.3, 3.4 and 3.5,3.6. Check
-   https://travis-ci.org/ioparaskev/cenotes/pull_requests
+   https://travis-ci.org/cenotes/cenotes/pull_requests
    and make sure that the tests pass for all supported Python versions.
 
 Tips

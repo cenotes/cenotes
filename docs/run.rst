@@ -11,7 +11,7 @@ Many ways to run this:
 
       .. code-block:: bash
 
-         git clone https://github.com/ioparaskev/cenotes.git
+         git clone https://github.com/cenotes/cenotes.git
 
    2. Install the requirements
 

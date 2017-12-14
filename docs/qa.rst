@@ -101,6 +101,6 @@ Make sure to check :doc:`design` before reading this
 
 
 
-.. _cenotes-reaction: https://github.com/ioparaskev/cenotes-reaction
-.. _cenotes-cli: https://github.com/ioparaskev/cenotes-cli
+.. _cenotes-reaction: https://github.com/cenotes/cenotes-reaction
+.. _cenotes-cli: https://github.com/cenotes/cenotes-cli
 .. _rainbow tables: https://en.wikipedia.org/wiki/Rainbow_table

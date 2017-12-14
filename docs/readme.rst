@@ -1,8 +1,8 @@
 CENotes
 =======
 
-.. image:: https://travis-ci.org/ioparaskev/cenotes.svg?branch=master
-        :target: https://travis-ci.org/ioparaskev/cenotes
+.. image:: https://travis-ci.org/cenotes/cenotes.svg?branch=master
+        :target: https://travis-ci.org/cenotes/cenotes
 
 .. image:: https://readthedocs.org/projects/cenotes/badge/?version=latest
         :target: https://cenotes.readthedocs.io/en/latest/?badge=latest
@@ -10,14 +10,20 @@ CENotes
 
 **C(ryptographical) E(xpendable) Notes**
 
-* Free software: GNU General Public License v3
-* Demo: https://cenot.es
-* Source code:
-   * Backend: https://github.com/ioparaskev/cenotes
-   * Frontend: https://github.com/ioparaskev/cenotes-reaction
-* Documentation: https://cenotes.readthedocs.io
-* Design: See :doc:`design`
-* Release history: See :doc:`history`
+-  Free software: GNU General Public License v3
+
+-  `Backend & Frontend Demo`_
+
+-  Source code:
+
+   -  `Backend`_
+   -  `Frontend`_
+   -  `CLI`_
+   -  `Libraries`_
+
+-  `Documentation`_
+
+-  `Backend Design`_
 
 What is this?
 -------------
@@ -31,7 +37,7 @@ UI/Frontend. This is a **backend** project. Frontend solutions will be different
 The reason for this is to allow flexibility in frontend choice and to avoid huge bundle projects.
 
 A **frontend** project that communicates with the **backend** can be found
-`here <https://github.com/ioparaskev/cenotes-reaction>`_
+`here <https://github.com/cenotes/cenotes-reaction>`_
 
 Features
 --------
@@ -82,4 +88,12 @@ Q&A
 See :doc:`qa`
 
 
+.. _Backend & Frontend Demo: https://cenot.es
+.. _Backend: https://github.com/cenotes/cenotes
+.. _Frontend: https://github.com/cenotes/cenotes-reaction
+.. _CLI: https://github.com/cenotes/cenotes-cli
+.. _Libraries: https://github.com/cenotes/cenotes-lib
+.. _Documentation: https://cenotes.readthedocs.io
+.. _Backend Design: https://cenotes.readthedocs.io/en/latest/design.html
 .. _pynacl: https://pynacl.readthedocs.io/en/latest/
+.. _design: https://cenotes.readthedocs.io/en/latest/design.html
