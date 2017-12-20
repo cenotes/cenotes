@@ -95,9 +95,16 @@ Make sure to check :doc:`design` before reading this
 - I don't trust you but wan't to use this. What can I do?
    Download the backend code and the frontend code (`cenotes-reaction`_) and set up your own server serving this.
 - I don't trust any internet solution (frontend/backend) for encryption operations. What can I do?
-   You can still download the backend code and use the encryption & decryption modules (check `cenotes-cli`_ for more info).
-   In the future, options for no-server usage will be added.
+   You can use `cenotes-cli`_ which relies on the same encryption modules and supports local encryption before storing remotely.
+   With `cenotes-cli` you can even encrypt a note without uploading it and pass it to someone who will be able to decrypt it
+   through the site (bare in mind though that this means, that in that case you have a persistent note)
    Otherwise use some other offline encryption solution like PGP, AES etc.
+- I tried `cenotes-cli`_ and I really don't understand why when I locally encrypt, I end up with 2 different keys and payloads!
+   cenotes backend cannot know if you are uploading an encrypted note or a plaintext note. So the server will always
+   encrypt any note you upload.
+   For security reasons there will not be an option to support note uploading without server encryption. If you want to
+   upload your encrypted note without the server making any other actions, encrypt your note locally and use one of the
+   thousand note (without encryption) sharing sites to pass it on.
 
 
 
