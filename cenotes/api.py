@@ -1,4 +1,5 @@
 import json
+from cenotes_lib.exceptions import InvalidUsage
 
 
 def craft_response(enote, error, key, dkey, payload, plaintext, success):
@@ -20,7 +21,10 @@ def craft_json_response(success=True, error="", enote=None,
 
 
 def get_request_params(request_params):
-    return CENParams(**request_params)
+    try:
+        return CENParams(**request_params)
+    except TypeError:
+        raise InvalidUsage("Wrong format of parameters given. Could not parse")
 
 
 class CENParams(object):
