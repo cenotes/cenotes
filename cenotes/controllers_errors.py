@@ -24,5 +24,5 @@ def invalid_key_or_note(error):
 
 
 @error_bp.app_errorhandler(500)
-def not_found(error):
+def internal_error(error):
     return craft_json_response(error="Something bad server-side happened"), 500
