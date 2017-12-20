@@ -21,3 +21,8 @@ def invalid_usage(error):
 @error_bp.app_errorhandler(CenotesError)
 def invalid_key_or_note(error):
     return craft_json_response(error="Invalid key or note not found"), 400
+
+
+@error_bp.app_errorhandler(500)
+def not_found(error):
+    return craft_json_response(error="Something bad server-side happened"), 500
