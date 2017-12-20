@@ -35,6 +35,16 @@ def test_encrypt_simple(app, db, client):
     assert note.expiration_date == date(year=2017, month=10, day=19)
 
 
+def test_encrypt_no_plaintext(db, client):
+    assert Note.query.count() == 0
+    response = client.post(
+        "notes/encrypt/", data=json.dumps(
+            dict(expiration_date="19")),
+        content_type='application/json')
+    assert response.status_code == 400
+    assert Note.query.count() == 0
+
+
 def test_encrypt_no_note(db, client):
 
     assert Note.query.count() == 0
