@@ -4,6 +4,12 @@ History
 
 0.7.0 (2017-12-14)
 ------------------
+* Custom 500 error handler
+* Catching errors in case of malformed json
+* QA update for cenotes-cli
+
+0.7.0 (2017-12-14)
+------------------
 * Use the external package cenotes-lib
 
 0.6.0 (2017-12-12)
