@@ -1,6 +1,13 @@
 =======
 History
 =======
+0.7.3 (2017-05-07)
+------------------
+* Add long_description content type in setup.py
+
+0.7.2 (2017-05-07)
+------------------
+* Add include of tests and README.md and LICENSE in MANIFEST
 
 0.7.1 (2017-12-14)
 ------------------

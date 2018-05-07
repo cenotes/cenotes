@@ -32,6 +32,7 @@ setup(
     version='0.7.2',
     description="Cryptographical Expendable Notes",
     long_description=readme + '\n\n' + history,
+    long_description_content_type='text/x-rst',
     author="John Paraskevopoulos",
     author_email='ioparaskev@gmail.comm',
     url='https://github.com/cenotes/cenotes',
