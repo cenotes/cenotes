@@ -3,11 +3,9 @@
 
 from setuptools import setup
 
-with open('docs/readme.rst') as readme_file:
+with open('README.md') as readme_file:
     readme = readme_file.read()
 
-with open('HISTORY.rst') as history_file:
-    history = history_file.read()
 
 requirements = [
     "flask>=0.12.2",
@@ -31,8 +29,8 @@ setup(
     name='cenotes',
     version='0.7.3',
     description="Cryptographical Expendable Notes",
-    long_description=readme + '\n\n' + history,
-    long_description_content_type='text/x-rst',
+    long_description=readme,
+    long_description_content_type='text/markdown',
     author="John Paraskevopoulos",
     author_email='ioparaskev@gmail.comm',
     url='https://github.com/cenotes/cenotes',
