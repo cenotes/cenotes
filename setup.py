@@ -29,7 +29,7 @@ test_requirements = [
 
 setup(
     name='cenotes',
-    version='0.7.2',
+    version='0.7.3',
     description="Cryptographical Expendable Notes",
     long_description=readme + '\n\n' + history,
     long_description_content_type='text/x-rst',
