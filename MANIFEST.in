@@ -1,3 +1,4 @@
-include LICENSE.txt
-include README.rst
+include LICENSE
+include README.md
 include HISTORY.rst
+include tests/*
