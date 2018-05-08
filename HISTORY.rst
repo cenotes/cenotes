@@ -1,6 +1,10 @@
 =======
 History
 =======
+0.7.5 (2017-05-08)
+------------------
+* Fix flask 1.+ issues with json
+
 0.7.4 (2017-05-07)
 ------------------
 * Change long description to README.md for pypi view
