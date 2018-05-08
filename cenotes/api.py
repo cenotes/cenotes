@@ -1,5 +1,5 @@
-import json
 from cenotes_lib.exceptions import InvalidUsage
+from flask import jsonify
 
 
 def craft_response(enote, error, key, dkey, payload, plaintext, success):
@@ -16,7 +16,7 @@ def craft_response(enote, error, key, dkey, payload, plaintext, success):
 def craft_json_response(success=True, error="", enote=None,
                         plaintext="", key="", payload="", dkey=""):
 
-    return json.dumps(
+    return jsonify(
         craft_response(enote, error, key, dkey, payload, plaintext, success))
 
 
