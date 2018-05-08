@@ -3,13 +3,13 @@ env:
     - DB=mysql TOXENV=py-mysql TEST_DB_USER=travis
     - DB=postgresql TOXENV=py-postgres TEST_DB_USER=travis TEST_DB_PORT=5432
     - DB=sqlite TOXENV=py-sqlite
+    - DB=sqlite TOXENV=py-integration
     - TOXENV=flake8
 install:
   - pip install -U tox
 language:
   - python
 python:
-  - 3.4
   - 3.5
   - 3.6
 script:
