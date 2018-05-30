@@ -1,9 +1,9 @@
 -i https://pypi.python.org/simple
 alembic==0.9.10
-cenotes-lib==0.1.1
+cenotes-lib==0.2.2
 cffi==1.11.5
 click==6.7
-flask-migrate==2.2.1
+flask-migrate==2.1.1
 flask-script==2.0.6
 flask-sqlalchemy==2.3.2
 flask==1.0.2
