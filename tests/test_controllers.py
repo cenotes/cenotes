@@ -41,8 +41,8 @@ def test_encrypt_no_plaintext(db, client):
         "notes/encrypt/", data=json.dumps(
             dict(expiration_date="19")),
         content_type='application/json')
-    assert response.status_code == 400
-    assert Note.query.count() == 0
+    assert response.status_code == 200
+    assert Note.query.count() == 1
 
 
 def test_encrypt_no_note(db, client):
@@ -51,9 +51,11 @@ def test_encrypt_no_note(db, client):
     response = client.post("notes/encrypt/",
                            data=json.dumps(dict(key="test")),
                            content_type='application/json')
-    assert response.status_code == 400
-    assert response.json["success"] is False
-    assert "Note payload cannot be empty" in response.json["error"]
+    assert_successful_request(response)
+    note = Note.query.one()
+    key = crypto.url_safe_decode(response.json["key"])
+    assert crypto.decrypt_with_key(crypto.url_safe_decode(note.payload),
+                                   key).decode() == ""
 
 
 def test_encrypt_no_store(db, client):

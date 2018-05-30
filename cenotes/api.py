@@ -28,7 +28,7 @@ def get_request_params(request_params):
 
 
 class CENParams(object):
-    def __init__(self, plaintext=None, key=None, expiration_date=None,
+    def __init__(self, plaintext="", key=None, expiration_date=None,
                  visits_count=None, max_visits=None, no_store=False,
                  payload=None, **kwargs):
         self.plaintext = plaintext
