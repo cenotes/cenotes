@@ -137,3 +137,5 @@ fabric.properties
 
 # tox
 .tox
+
+.pytest_cache
