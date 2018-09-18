@@ -5,6 +5,7 @@ from flask_migrate import Migrate
 import nacl.secret
 from cenotes.models import db
 from cenotes import controllers, controllers_errors as errors
+from cenotes.config_backend import validate_config
 from cenotes_lib.crypto import generate_random_chars, url_safe_encode
 
 migrate = Migrate()
@@ -17,6 +18,8 @@ def create_app(app_settings=None):
     app = Flask(__name__)
     app.config.from_object(app_settings or os.environ.get('APP_SETTINGS')
                            or "cenotes.config_backend.Production")
+    validate_config(app.config)
+
     db.init_app(app)
     migrate.init_app(app, db)
 
