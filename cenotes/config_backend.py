@@ -73,6 +73,11 @@ class Config(object):
             }
     )
 
+    FALLBACK_ALGORITHM_PARAMS = {
+        "algorithm": os.getenv("FALLBACK_ALGORITHM") or "scrypt",
+        "hardness": os.getenv("FALLBACK_ALGORITHM_HARDNESS") or "interactive"
+    }
+
 
 class Production(Config):
     DEBUG = DEVELOPMENT = TESTING = False
@@ -89,17 +94,34 @@ class Testing(Config):
         os.path.join(Config.BASE_DIR, 'cenotes_test.sqlite3')))
 
 
-def validate_config(config):
+def validate_crypto_configuration(config):
     algorithm_params = config["SUPPORTED_ALGORITHM_PARAMS"]
-    assert isinstance(algorithm_params, dict), \
-        "Algorithm params must be of dict type." \
-        "See the docs for more info"
+    if not isinstance(algorithm_params, dict):
+        raise RuntimeError("Algorithm params must be of dict type."
+                           "See the docs for more info")
+
     unsupported = validate_algorithm_params(
         map(lambda x: AlgoParam(x[0], x[1]['hardness']),
             algorithm_params.items()))
     if unsupported:
-        print("The following algorithms/algorithm-options are not supported "
-              "in your system.\n {0}\n"
-              "Please verify your configuration and try again"
-              .format(unsupported))
+        raise RuntimeError(
+            "The following algorithms/algorithm-options are not supported "
+            "in your system.\n {0}\n"
+            "Please verify your configuration and try again"
+            .format(unsupported))
+
+    fbalgo = config["FALLBACK_ALGORITHM_PARAMS"]["algorithm"]
+    fbhard = config["FALLBACK_ALGORITHM_PARAMS"]["hardness"]
+
+    if not (algorithm_params.get(fbalgo)
+            and fbhard in algorithm_params.get(fbalgo, {}).get("hardness")):
+        raise RuntimeError("Fallback algorithm parameters must exist in the "
+                           "defined supported algorithm params")
+
+
+def validate_config(config):
+    try:
+        validate_crypto_configuration(config)
+    except RuntimeError as e:
+        print("Error: {}".format(e))
         exit(1)
