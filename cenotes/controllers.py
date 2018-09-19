@@ -37,8 +37,10 @@ def encrypt_note(key=None):
     cen_parameters = api.get_request_params(
         request.get_json(silent=True) or {})
 
-    payload, final_key = crypto.encrypt_note(
-        cen_parameters.plaintext, key or cen_parameters.key)
+    payload, final_key = crypto.encrypt_note_with_params(
+        cen_parameters.plaintext,
+        key or cen_parameters.key or crypto.generate_random_chars(),
+        cen_parameters.algorithm, cen_parameters.hardness)
 
     if cen_parameters.no_store:
         return api.craft_json_response(payload=payload, key=final_key), 200

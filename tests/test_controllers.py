@@ -264,3 +264,39 @@ def test_get_default_algorithm_options(client):
     assert response.status_code == 200
     assert response.json["algorithm"] == "scrypt"
     assert response.json["hardness"] == "min"
+
+
+def test_encrypt_with_options(app, client):
+    algo, hardness = "scrypt", "moderate"
+    assert hardness != app.config["FALLBACK_ALGORITHM_PARAMS"]["hardness"]
+
+    plaintext = "test-note"
+    enc_response = client.post(
+        "notes/encrypt/", data=json.dumps(
+            dict(plaintext=plaintext, no_store=True,
+                 algorithm=algo, hardness=hardness)),
+        content_type='application/json')
+    note = enc_response.json["payload"]
+    key = enc_response.json["key"]
+
+    dec_response = client.get("/notes/{0}/{1}".format(note, key))
+    assert_successful_request(dec_response)
+    assert dec_response.json["plaintext"] == plaintext
+
+
+def test_encrypt_with_wrong_options(app, client):
+    algo, hardness = "wrong", "wrong"
+    assert hardness != app.config["FALLBACK_ALGORITHM_PARAMS"]["hardness"]
+
+    plaintext = "test-note"
+    enc_response = client.post(
+        "notes/encrypt/", data=json.dumps(
+            dict(plaintext=plaintext, no_store=True,
+                 algorithm=algo, hardness=hardness)),
+        content_type='application/json')
+    note = enc_response.json["payload"]
+    key = enc_response.json["key"]
+
+    dec_response = client.get("/notes/{0}/{1}".format(note, key))
+    assert_successful_request(dec_response)
+    assert dec_response.json["plaintext"] == plaintext
