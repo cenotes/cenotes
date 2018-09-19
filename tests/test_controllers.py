@@ -248,3 +248,19 @@ def test_avoid_note_deletion_issuing_payload_as_key(db, client):
 
     assert_bad_request(dec_response)
     assert Note.query.count() == 1
+
+
+def test_get_config(client):
+    response = client.get("config/algorithms/")
+
+    assert response.status_code == 200
+    # scrypt is the default fallback option, so it should always exist
+    assert response.json["scrypt"] is not None
+
+
+def test_get_default_algorithm_options(client):
+    response = client.get("config/algorithms/default/")
+
+    assert response.status_code == 200
+    assert response.json["algorithm"] == "scrypt"
+    assert response.json["hardness"] == "min"

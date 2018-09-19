@@ -93,6 +93,11 @@ class Testing(Config):
     SQLALCHEMY_DATABASE_URI = os.getenv("TEST_DB_URI", 'sqlite:///{0}'.format(
         os.path.join(Config.BASE_DIR, 'cenotes_test.sqlite3')))
 
+    FALLBACK_ALGORITHM_PARAMS = {
+        "algorithm": os.getenv("FALLBACK_ALGORITHM") or "scrypt",
+        "hardness": os.getenv("FALLBACK_ALGORITHM_HARDNESS") or "min"
+    }
+
 
 def validate_crypto_configuration(config):
     algorithm_params = config["SUPPORTED_ALGORITHM_PARAMS"]
