@@ -12,7 +12,7 @@ pynacl = {version = ">=1.2.0"}
 "flask-script" = "*"
 "python-dateutil" = "*"
 click = "*"
-"cenotes-lib" = {version = ">=0.2.0"}
+"cenotes-lib" = {version = ">=0.2.3"}
 
 
 [dev-packages]
