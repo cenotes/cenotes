@@ -4,7 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-
 flask = "*"
 pynacl = {version = ">=1.2.0"}
 "flask-sqlalchemy" = "*"
@@ -14,14 +13,12 @@ pynacl = {version = ">=1.2.0"}
 click = "*"
 "cenotes-lib" = {version = ">=0.2.3"}
 
-
 [dev-packages]
-
-pytest = "*"
-tox = "*"
+pytest = {version = "==3.7.0"}
 "pytest-flask" = "*"
 coverage = "*"
 sphinx = "*"
 "sphinx-autobuild" = "*"
 "flake8" = "*"
 bumpversion = "*"
+tox = "*"
