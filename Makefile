@@ -67,9 +67,10 @@ coverage: ## check code coverage quickly with the default Python
 docs: ## generate Sphinx HTML documentation, including API docs
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
-	rm -f requirements-dev.txt
-	pipenv lock --requirements > requirements-dev.txt
-	$(BROWSER) docs/_build/html/index.html
+	rm -f requirements*.txt
+	pipenv lock --requirements > requirements.txt
+	pipenv lock --requirements --dev > requirements-dev.txt
+	python -m webbrowser "http://localhost:63342/cenotes/docs/_build/html/index.html"
 
 servedocs: docs ## compile the docs watching for changes
 	watchmedo shell-command -p '*.rst' -c '$(MAKE) -C docs html' -R -D .
