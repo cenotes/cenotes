@@ -15,11 +15,12 @@ manager.add_option("-c", "--config", dest="app_settings", required=False)
 manager.add_command('db', MigrateCommand)
 
 
-def show_json_request_format(indent=False):
-    func = functools.partial(json.dumps, indent=4) if indent else json.dumps
-    return func(CENParams(plaintext="", key="",
-                          expiration_date=date.today().isoformat(),
-                          visits_count=0, max_visits=0).__dict__)
+def show_json_request_format(app, indent=False):
+    with app.app_context():
+        func = functools.partial(json.dumps, indent=4) if indent else json.dumps
+        return func(CENParams(plaintext="", key="",
+                              expiration_date=date.today().isoformat(),
+                              visits_count=0, max_visits=0).__dict__)
 
 
 def show_json_response_format(indent=False):
