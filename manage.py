@@ -6,6 +6,7 @@ import functools
 from flask_migrate import MigrateCommand
 from flask_script import Manager
 
+from cenotes_lib.crypto import get_supported_algorithm_options
 from cenotes import create_app
 from cenotes.api import craft_response, CENParams
 from cenotes.models import Note
@@ -75,6 +76,16 @@ def api(response, request, both):
 def routes():
     for line in sorted(list_url_endpoints()):
         print(line)
+
+
+@manager.option("--keygen", dest="enc", action="store_true", default=False)
+def settings(enc):
+    def craft_algo_params_format():
+        return {algo: {"hardness": hardness}
+                for algo, hardness in tuple(get_supported_algorithm_options())}
+    if enc:
+        print("Valid algorithm/hardness settings for your device are:\n"
+              "{params}".format(params=craft_algo_params_format()))
 
 
 if __name__ == '__main__':
