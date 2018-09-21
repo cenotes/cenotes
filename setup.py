@@ -10,11 +10,11 @@ with open('README.md') as readme_file:
 requirements = [
     "flask>=0.12.2",
     "pynacl>=1.2.0",
-    "cenotes-lib>=0.1.0",
+    "cenotes-lib>=0.2.0",
     "flask-sqlalchemy==2.3.2",
     "flask-migrate==2.1.1",
     "flask-script==2.0.6",
-    "python-dateutil==2.6.1"
+    "python-dateutil>=2.6.1"
 ]
 
 test_requirements = [

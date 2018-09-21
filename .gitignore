@@ -26,7 +26,6 @@ wheels/
 .installed.cfg
 *.egg
 MANIFEST
-Pipfile.lock
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -134,8 +133,5 @@ fabric.properties
 # db files
 *.sqlite*
 *.db*
-
-# tox
-.tox
 
 .pytest_cache

@@ -6,6 +6,7 @@ import functools
 from flask_migrate import MigrateCommand
 from flask_script import Manager
 
+from cenotes_lib.crypto import get_supported_algorithm_options
 from cenotes import create_app
 from cenotes.api import craft_response, CENParams
 from cenotes.models import Note
@@ -16,10 +17,11 @@ manager.add_command('db', MigrateCommand)
 
 
 def show_json_request_format(indent=False):
-    func = functools.partial(json.dumps, indent=4) if indent else json.dumps
-    return func(CENParams(plaintext="", key="",
-                          expiration_date=date.today().isoformat(),
-                          visits_count=0, max_visits=0).__dict__)
+    with create_app().app_context():
+        func = functools.partial(json.dumps, indent=4) if indent else json.dumps
+        return func(CENParams(plaintext="", key="",
+                              expiration_date=date.today().isoformat(),
+                              visits_count=0, max_visits=0).__dict__)
 
 
 def show_json_response_format(indent=False):
@@ -74,6 +76,16 @@ def api(response, request, both):
 def routes():
     for line in sorted(list_url_endpoints()):
         print(line)
+
+
+@manager.option("--keygen", dest="enc", action="store_true", default=False)
+def settings(enc):
+    def craft_algo_params_format():
+        return {algo: {"hardness": hardness}
+                for algo, hardness in tuple(get_supported_algorithm_options())}
+    if enc:
+        print("Valid algorithm/hardness settings for your device are:\n"
+              "{params}".format(params=craft_algo_params_format()))
 
 
 if __name__ == '__main__':

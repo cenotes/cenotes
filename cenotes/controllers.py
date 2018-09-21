@@ -1,11 +1,13 @@
 from cenotes_lib import crypto
 from flask import Blueprint, request, current_app
 from functools import partial
+from flask import jsonify
 
 from cenotes import api, models
 from cenotes.helpers import generate_decrypt_response
 
 notes_bp = Blueprint('notes', __name__, url_prefix='/notes')
+config_bp = Blueprint('config', __name__, url_prefix='/config')
 
 
 @notes_bp.route("/", methods=["POST"])
@@ -35,8 +37,10 @@ def encrypt_note(key=None):
     cen_parameters = api.get_request_params(
         request.get_json(silent=True) or {})
 
-    payload, final_key = crypto.encrypt_note(
-        cen_parameters.plaintext, key or cen_parameters.key)
+    payload, final_key = crypto.encrypt_note_with_params(
+        cen_parameters.plaintext,
+        key or cen_parameters.key or crypto.generate_random_chars(),
+        cen_parameters.algorithm, cen_parameters.hardness)
 
     if cen_parameters.no_store:
         return api.craft_json_response(payload=payload, key=final_key), 200
@@ -52,3 +56,13 @@ def encrypt_note(key=None):
 
         return api.craft_json_response(payload=encrypted_id, enote=new_note,
                                        key=final_key, dkey=duress_key), 200
+
+
+@config_bp.route("/algorithms/", methods=["GET"])
+def get_config():
+    return jsonify(current_app.config["SUPPORTED_ALGORITHM_PARAMS"])
+
+
+@config_bp.route("/algorithms/default/", methods=["GET"])
+def get_fallback_algorithm_params():
+    return jsonify(current_app.config["FALLBACK_ALGORITHM_PARAMS"])
