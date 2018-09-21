@@ -63,14 +63,9 @@ class Config(object):
     SUPPORTED_ALGORITHM_PARAMS = (
             json.loads(os.getenv("SUPPORTED_ALGORITHM_PARAMS", '{}'))
             or
-            {
-                "argon2i": {
-                    "hardness": ["min", "interactive", "moderate", "sensitive"]
-                },
-                "scrypt": {
-                    "hardness": ["min", "interactive", "moderate", "sensitive"]
-                }
-            }
+            {algo: {"hardness": hardness}
+             for algo, hardness in tuple(
+                crypto.get_supported_algorithm_options())}
     )
 
     FALLBACK_ALGORITHM_PARAMS = {
