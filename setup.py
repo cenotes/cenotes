@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with open('README.md') as readme_file:
     readme = readme_file.read()
@@ -15,6 +15,10 @@ requirements = [
     "flask-migrate==2.1.1",
     "flask-script==2.0.6",
     "python-dateutil>=2.6.1"
+]
+
+setup_requirements = [
+    "pytest-runner"
 ]
 
 test_requirements = [
@@ -35,9 +39,7 @@ setup(
     author_email='ioparaskev@gmail.comm',
     url='https://github.com/cenotes/cenotes',
     python_requires=">=3.4",
-    packages=[
-        'cenotes',
-    ],
+    packages=find_packages(exclude=['docs']),
     entry_points={
         "console_scripts": ['cenotes = cenotes.cli:main']
     },
@@ -58,5 +60,6 @@ setup(
         'Programming Language :: Python :: 3.6',
     ],
     test_suite='tests',
+    setup_requires=setup_requirements,
     tests_require=test_requirements
 )

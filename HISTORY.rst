@@ -1,6 +1,10 @@
 =======
 History
 =======
+0.8.1 (2018-09-24)
+------------------
+* Add test discovery and inclusion to setup.py
+
 0.8.0 (2018-09-21)
 ------------------
 * Add support to choose algorithm and hardness for the key generation. This allows
