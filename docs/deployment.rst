@@ -2,6 +2,9 @@ Deployment how-to
 =================
 
 
+Deploying the backend
+=====================
+
 UWSGI-NGINX
 -----------
 
@@ -62,6 +65,11 @@ UWSGI-NGINX
               include uwsgi_params;
               uwsgi_pass  unix:/run/uwsgi/app/cenotes/cenotes.sock;
           }
+
+          location /config {
+              include uwsgi_params;
+              uwsgi_pass  unix:/run/uwsgi/app/cenotes/cenotes.sock;
+          }
       }
 
 Maintenance
@@ -81,3 +89,63 @@ the expired notes. This can be done easily:
    .. code-block:: bash
 
       cenotes --cleanup
+
+
+Deploying the frontend
+======================
+
+Using the packaged bundle
+
+1. Download the latest release from [here](https://github.com/cenotes/cenotes-reaction/releases)
+2. Extract, rename as you wish and serve the build folder
+    - Example of an nginx configuration (build folder is renamed-> `cenotes-ui`)
+
+    .. code-block:: bash
+
+       server {
+           listen 80;
+           server_name <your server name / ip>;
+
+           # CENOTES-FRONTEND
+           root /var/www/html/cenotes-ui;
+           index index.html index.htm;
+
+           location ~* \.(?:manifest|appcache|html?|xml|json)$ {
+             expires -1;
+           }
+
+           location ~* \.(?:css|js)$ {
+             try_files $uri =404;
+             expires 1y;
+             access_log off;
+             add_header Cache-Control "public";
+           }
+
+           # Any route containing a file extension (e.g. /devicesfile.js)
+           location ~ ^.+\..+$ {
+             try_files $uri =404;
+           }
+
+        # Any route that doesn't have a file extension (e.g. /devices)
+        location / {
+            try_files $uri $uri/ /index.html;
+        }
+       }
+3. You will also need to include the endpoint of your backend application
+    - If backend is running in the same machine as a uwsgi socket, see the instructions above
+    - If backend is running running in another site
+
+    .. code-block:: bash
+
+       server {
+           listen 80;
+           server_name <your server name / ip>;
+           # CENOTES-BACKEND
+               location /notes {
+                   proxy_pass http://<backend_url>:<port>;
+               }
+
+               location /config {
+                   proxy_pass http://<backend_url>:<port>;
+               }
+       }

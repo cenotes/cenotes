@@ -17,7 +17,7 @@ Less technical questions
 - Can I learn more about what encryption is used for all these?
    Of course! See :doc:`design`
 - I ran / deployed the project, but all I see is text! WTF?
-   This is a backend project. You can write your own frontend to use this functionality or
+   You probably ran/deployed the backend project. You can write your own frontend to use this functionality or
    use an existing solution such as `cenotes-reaction`_
 - Why are there two different projects instead of one complete?
    Splitting the backend from the frontend allows us
@@ -88,26 +88,36 @@ Make sure to check :doc:`design` before reading this
 - Why not use a front end solution like JS?
    Using a front end solution does not remove the trust factor completely. Unless every time you
    visit a site you thoroughly check the JS running and make sure it won't leak any information.
-   Some time in the future a solution to provide encryption locally will be added but not in the browser.
-   Keep in sync for new cenotes projects
 - Why should I trust the server?
    Anything said will never be 100% sufficient. I cannot prove that you should trust me 100% or the code served.
-- I don't trust you but wan't to use this. What can I do?
+- I don't trust your server for my notes but I want to use this. What can I do?
    Download the backend code and the frontend code (`cenotes-reaction`_) and set up your own server serving this.
 - I don't trust any internet solution (frontend/backend) for encryption operations. What can I do?
    You can use `cenotes-cli`_ which relies on the same encryption modules and supports local encryption before storing remotely.
    With `cenotes-cli` you can even encrypt a note without uploading it and pass it to someone who will be able to decrypt it
-   through the site (bare in mind though that this means, that in that case you have a persistent note)
+   through the site (bare in mind though that this means, that in that case you have a persistent note).
    Otherwise use some other offline encryption solution like PGP, AES etc.
 - I tried `cenotes-cli`_ and I really don't understand why when I locally encrypt, I end up with 2 different keys and payloads!
    cenotes backend cannot know if you are uploading an encrypted note or a plaintext note. So the server will always
-   encrypt any note you upload.
-   For security reasons there will not be an option to support note uploading without server encryption. If you want to
+   encrypt any note you upload. This means that now (since the real note is encrypted with another key), you can share the direct site
+   link publicly. The receiver will have to know the extra key (the first one you got) to decrypt the real note.
+   For security reasons **there will not be an option to support note uploading without server encryption**. If you want to
    upload your encrypted note without the server making any other actions, encrypt your note locally and use one of the
    thousand note (without encryption) sharing sites to pass it on.
+- Why using the duress key results in a message that the note was not found?
+   Usage a duress key should be kept secret from the adversary. This means that an adversary should not understand if they used the
+   real key but the note was already destroyed, or if they used the duress key. This serves in cases where the "destruction of evidence"
+   would result is some kind of punishment.
+- What are these algorithm parameters (argon2i min, scrypt interactive, etc) I see?
+   As mentioned in the :doc:`design` there are two key derivation algorithms supported: Argon2i and Scrypt.
+   Both of these algorithms take some parameters related to how much memory and cpu they are allowed to use.
+   Although these are of most importance for storage operations, we chose to expose them to our scenario as well.
+   For more information you can read the `pynacl hashing`_ entry or see the `libsodium documentation`_
 
 
 
 .. _cenotes-reaction: https://github.com/cenotes/cenotes-reaction
 .. _cenotes-cli: https://github.com/cenotes/cenotes-cli
 .. _rainbow tables: https://en.wikipedia.org/wiki/Rainbow_table
+.. _pynacl hashing: https://pynacl.readthedocs.io/en/stable/password_hashing/#module-level-constants-for-operation-and-memory-cost-tweaking
+.. _libsodium documentation: https://libsodium.gitbook.io/doc/

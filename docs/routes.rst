@@ -20,10 +20,6 @@ Currently available routes and methods
         * /notes/<enote_id>
         * /notes/<enote_id>/<key>
         * OPTIONS,PATCH
-    * delete_note
-        * /notes/<enote_id>
-        * /notes/<enote_id>/<key>
-        * DELETE,OPTIONS
 
 Finding routes and accepted methods
 -----------------------------------

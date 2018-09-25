@@ -27,17 +27,17 @@ CENotes
 
 What is this?
 -------------
-A **backend** project to support encryption/decryption of expendable notes
+An effort to support encryption/decryption of expendable notes
+It consists of multiple projects:
 
-An example using this backend can be found at https://cenot.es
+- `Library`_ : To serve as a library for easier use of encryption/decryption functions
+- `Backend`_: To serve as a remote endpoint for handling and storing encrypted notes
+- `Frontend`_: To provide a UI for easier usage
+- `CLI`_: To provide a cli interface and give the ability to encrypt a note locally before
+   sending to the server. This serves as an extra paranoia check in case you don't trust the server.
 
-What this isn't
----------------
-UI/Frontend. This is a **backend** project. Frontend solutions will be different projects.
-The reason for this is to allow flexibility in frontend choice and to avoid huge bundle projects.
 
-A **frontend** project that communicates with the **backend** can be found
-`here <https://github.com/cenotes/cenotes-reaction>`_
+An example using the backend and the frontend can be found at https://cenot.es
 
 Features
 --------
@@ -53,7 +53,8 @@ Features
    * Using the duress key instead of the real decryption key will delete the note and respond as if
      the note didn't exist (to avoid indicating the use of the duress key)
 * Persistent visit notes
-   * Notes can be marked as "persistent visit" so that that they are not deleted based on visit count
+   * Notes can be marked as "persistent visit" so that that they are not deleted based on visit count.
+     These are not stored on the server and can be used across different backend servers.
 
 
 How does this work?
@@ -92,6 +93,7 @@ See :doc:`qa`
 .. _Backend: https://github.com/cenotes/cenotes
 .. _Frontend: https://github.com/cenotes/cenotes-reaction
 .. _CLI: https://github.com/cenotes/cenotes-cli
+.. _Library: https://github.com/cenotes/cenotes-lib
 .. _Libraries: https://github.com/cenotes/cenotes-lib
 .. _Documentation: https://cenotes.readthedocs.io
 .. _Backend Design: https://cenotes.readthedocs.io/en/latest/design.html

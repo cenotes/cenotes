@@ -8,8 +8,9 @@ Algorithms
 To encrypt the information, this software makes use of the **secret key encryption** of the
 `PyNaCL package`_. Currently the `Salsa20`_ stream cipher is used for the encryption and
 `Poly1305`_ for the data integrity. The **key derivation** is achieved using the `Argon2`_
-algorithm with the **argon2i** variant and fallsback to **scrypt** algorithm in combination
-with the **Salsa 20/8** core algorithm and the **Pbkdf2-SHA256** in case argon2 is not available.
+algorithm with the **argon2i** variant or the **scrypt** algorithm in combination
+with the **Salsa 20/8** core algorithm and the **Pbkdf2-SHA256**. Server can set the algorithm
+options (argon2i/scrypt parameters) that will be available to the user.
 Salt is calculated on the fly, and there are no precomputed salts.
 
 
@@ -21,8 +22,9 @@ When storing on server
 
 **Encryption**
 
-- The server receives the plaintext and a password
+- The server receives the plaintext and (optionally) a password
 - Using the password and the aforementioned key derivation function (kdf), a key is created
+  - If a password is not given, a random one is generated on the fly
 - With that **password derived key**, the server encrypts the plaintext and stores the encrypted payload on the database
 - The server encrypts with the **server key** the primary key of the row that corresponds to the encrypted payload
 - The server generates random bytes and encrypts them with the **server key** to use as a **duress key**
@@ -32,7 +34,8 @@ When storing on server
 **Decryption**
 
 - The server receives a payload and a key
-- Decoding the payload, the server tries to decrypt it with the **server key** (if it fails, it assumes this is a no-store payload)
+- Decoding the payload, the server tries to decrypt it with the **server key** (if it fails, it assumes this is a no-store payload,
+  see later-on for that scenario)
 - Using the decoded and decrypted payload it finds the id that corresponds to the encrypted payload row
 - The server tries to decrypt the **user provided key** with the **server key**
    - If that succeeds, it means this is a **duress key**. The server deletes the correspondin payload row and reports back that
@@ -54,7 +57,7 @@ When **not** storing on server
 **Decryption**
 
 - The server receives a payload and a key
-- Decoding the payload, the server tries to decrypt it with the **server key**  and fails
+- Decoding the payload, the server tries to decrypt it with the **server key** and fails
 - Using the decoded **user-key** it decrypts the encrypted payload
 - The server returns to the user the plaintext
 
