@@ -32,7 +32,7 @@ test_requirements = [
 
 setup(
     name='cenotes',
-    version='0.8.1',
+    version='0.8.2',
     description="Cryptographical Expendable Notes",
     long_description=readme,
     long_description_content_type='text/markdown',
