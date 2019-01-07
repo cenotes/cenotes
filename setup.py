@@ -14,7 +14,8 @@ requirements = [
     "flask-sqlalchemy==2.3.2",
     "flask-migrate==2.1.1",
     "flask-script==2.0.6",
-    "python-dateutil>=2.6.1"
+    "python-dateutil>=2.6.1",
+    "pyyaml>=4.2b1"
 ]
 
 setup_requirements = [

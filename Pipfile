@@ -22,3 +22,4 @@ sphinx = "*"
 "flake8" = "*"
 bumpversion = "*"
 tox = "*"
+"pyyaml" = {version = ">=4.2b4"}

@@ -1,48 +1,49 @@
 -i https://pypi.python.org/simple
-alabaster==0.7.11
+alabaster==0.7.12
 argh==0.26.2
 atomicwrites==1.2.1; python_version != '3.1.*'
 attrs==18.2.0
 babel==2.6.0
 bumpversion==0.5.3
-certifi==2018.8.24
+certifi==2018.11.29
 chardet==3.0.4
-click==6.7
-coverage==4.5.1
+click==7.0
+coverage==5.0a4
 docutils==0.14
-flake8==3.5.0
+filelock==3.0.10
+flake8==3.6.0
 flask==1.0.2
-idna==2.7
+idna==2.8; python_version != '3.1.*'
 imagesize==1.1.0; python_version != '3.0.*'
-itsdangerous==0.24
+itsdangerous==1.1.0; python_version != '3.1.*'
 jinja2==2.10
-livereload==2.5.2
-markupsafe==1.0
+livereload==2.6.0; python_version >= '2.6'
+markupsafe==1.1.0; python_version != '3.1.*'
 mccabe==0.6.1
-more-itertools==4.3.0
-packaging==17.1
+more-itertools==5.0.0; python_version >= '2.6'
+packaging==18.0; python_version >= '2.6'
 pathtools==0.1.2
-pluggy==0.7.1; python_version != '3.1.*'
+pluggy==0.8.0; python_version != '3.1.*'
 port-for==0.3.1
-py==1.6.0; python_version != '3.1.*'
-pycodestyle==2.3.1
-pyflakes==1.6.0
-pygments==2.2.0
-pyparsing==2.2.1; python_version >= '2.6'
-pytest-flask==0.12.0
+py==1.7.0; python_version != '3.1.*'
+pycodestyle==2.4.0
+pyflakes==2.0.0; python_version != '3.1.*'
+pygments==2.3.1
+pyparsing==2.3.0; python_version >= '2.6'
+pytest-flask==0.14.0
 pytest==3.7.0
-pytz==2018.5
-pyyaml==3.13
-requests==2.19.1
-six==1.11.0
+pytz==2018.9
+pyyaml==4.2b4
+requests==2.21.0; python_version != '3.1.*'
+six==1.12.0; python_version >= '2.6'
 snowballstemmer==1.2.1
 sphinx-autobuild==0.7.1
-sphinx==1.8.0
+sphinx==1.8.3
 sphinxcontrib-websupport==1.1.0; python_version != '3.2.*'
-toml==0.9.6
-tornado==5.1.1; python_version != '3.0.*'
-tox==3.4.0
-urllib3==1.23; python_version != '3.2.*'
-virtualenv==16.0.0
+toml==0.10.0
+tornado==6.0a1; python_version >= '3.5'
+tox==3.6.1
+urllib3==1.24.1; python_version != '3.1.*'
+virtualenv==16.2.0; python_version != '3.1.*'
 watchdog==0.9.0
 werkzeug==0.14.1
