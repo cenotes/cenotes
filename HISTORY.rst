@@ -1,6 +1,18 @@
 =======
 History
 =======
+0.9.0 (2019-04-22)
+------------------
+* Drop python 3.4 support and add python 3.7 support
+
+0.8.3 (2019-04-22)
+------------------
+* Update packages and upgrade jinja and urllib3 version
+
+0.8.2 (2019-01-07)
+------------------
+* Update packages and upgrade pyyaml version
+
 0.8.1 (2018-09-24)
 ------------------
 * Add test discovery and inclusion to setup.py
