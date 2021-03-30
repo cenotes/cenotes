@@ -9,7 +9,7 @@ flask-sqlalchemy==2.4.0
 flask==1.1.1
 greenlet==1.0.0 ; python_version >= '3'
 itsdangerous==1.1.0
-jinja2==2.10.1
+jinja2==2.11.3
 mako==1.1.4
 markupsafe==1.1.1
 pycparser==2.20

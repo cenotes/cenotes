@@ -12,7 +12,7 @@ pynacl = {version = ">=1.2.0"}
 "python-dateutil" = "*"
 click = "*"
 "cenotes-lib" = {version = ">=0.2.3"}
-"jinja2" = "==2.10.1"
+"jinja2" = "==2.11.3"
 "urllib3" = "==1.24.2"
 
 [dev-packages]
