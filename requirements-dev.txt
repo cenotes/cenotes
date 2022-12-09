@@ -17,7 +17,7 @@ attrs==22.1.0; python_version >= '3.5'
 babel==2.11.0; python_version >= '3.6'
 bumpversion==0.5.3
 cenotes-lib==0.2.4
-certifi==2022.9.24; python_version >= '3.6'
+certifi==2022.12.7; python_version >= '3.6'
 cffi==1.15.1
 charset-normalizer==2.1.1; python_version >= '3.6'
 click==7.0
