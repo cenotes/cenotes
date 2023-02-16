@@ -78,5 +78,5 @@ tox==3.13.2
 urllib3==1.26.5
 virtualenv==20.16.6; python_version >= '3.6'
 watchdog==2.1.9; python_version >= '3.6'
-werkzeug==2.2.2; python_version >= '3.7'
+werkzeug==2.2.3; python_version >= '3.7'
 zipp==3.10.0; python_version >= '3.7'
